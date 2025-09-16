@@ -1,4 +1,3 @@
-import { Service, Event, EventCategory, ServiceCategory } from "@/types/events";
 import { ReactElement } from "react";
 
 type ItemWithCategories<T extends string> = {

@@ -12,14 +12,14 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Event } from "@/types/events";
+import { AdminEvent } from "@/types/events";
 import Header from "@/components/Header/header";
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb";
 import Loading from "@/components/Loading/loading";
 import QRCodeButton from "@/components/QRCodeButton/QRCodeButton";
 
 export default function AdminPage() {
-  const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<AdminEvent[]>([]);
   const [loading, setLoading] = useState(false);
   const [updating, setUpdating] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -86,13 +86,12 @@ export default function AdminPage() {
     { label: 'Admin' }
   ];
 
-  if (savedApiKey == '') {
+  if (savedApiKey == false) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-between mb-6">
             <Breadcrumb items={breadcrumbItems} />
-            <QRCodeButton />
           </div>
           <div className="text-center py-8 text-red-600">
             <div className="text-xl">Error: API key is not set. Please set the API_KEY environment variable.</div>
@@ -152,7 +151,7 @@ export default function AdminPage() {
         </div>
 
         <Header
-          title="Event Moderation"
+          title="AdminEvent Moderation"
           subtitle={`${events.length} unverified events pending review`}
         />
 
@@ -167,7 +166,7 @@ export default function AdminPage() {
             {events.map((event) => (
               <div key={event.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
                 <div className="flex flex-col md:flex-row md:items-start gap-4">
-                  {/* Event Image */}
+                  {/* AdminEvent Image */}
                   {event.imageurl && (
                     <div className="flex-shrink-0">
                       <Image
@@ -180,7 +179,7 @@ export default function AdminPage() {
                     </div>
                   )}
 
-                  {/* Event Details */}
+                  {/* AdminEvent Details */}
                   <div className="flex-1">
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                       <div className="flex-1">
@@ -226,7 +225,7 @@ export default function AdminPage() {
 
                         {/* Metadata */}
                         <div className="text-xs text-gray-500 dark:text-gray-400">
-                          <div>Event ID: {event.id}</div>
+                          <div>AdminEvent ID: {event.id}</div>
                           <div>Created: {new Date(event.created_at).toLocaleString()}</div>
                           {event.internal_creator_contact && (
                             <div>Contact: {event.internal_creator_contact}</div>
@@ -247,7 +246,7 @@ export default function AdminPage() {
                               Verifying...
                             </div>
                           ) : (
-                            '✓ Verify Event'
+                            '✓ Verify AdminEvent'
                           )}
                         </button>
                       </div>

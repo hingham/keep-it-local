@@ -3,7 +3,7 @@
 import { useState, useEffect, ReactElement } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
-import { CreateEvent, CreateService, EventCategory, Neighborhood } from '@/types/events';
+import { CreateEvent, CreateService, EventCategory, Neighborhood, ServiceCategory } from '@/types/events';
 
 export default function CreateListingPage() {
   const neighborhoodId = useParams().neighborhoodId as string;
@@ -36,6 +36,8 @@ export default function CreateListingPage() {
   const [serviceData, setServiceData] = useState<CreateService>({
     title: '',
     neighborhood_id: neighborhoodId ? parseInt(neighborhoodId) : 0,
+    categories: [] as ServiceCategory[],
+    imageurl: '',
     owner: '',
     website: '',
     contact_number: '',

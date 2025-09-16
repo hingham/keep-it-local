@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
 import { Service } from '@/types/events';
 import ErrorComponent from '@/components/ErrorComponent/errorComponent';
 import { ItemDetails } from '@/components/ItemDetails/itemDetails';

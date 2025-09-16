@@ -50,9 +50,21 @@ export type CreateEvent = Omit<Event, 'id' | 'created_at' | 'updated_at' | 'neig
   verified: boolean;
 };
 
+export interface AdminEvent extends Event {
+  delete_after: string,
+  internal_creator_contact: string;
+  verified: boolean;
+}
+
+export interface AdminService extends Service {
+  delete_after: string,
+  internal_creator_contact: string;
+  verified: boolean;
+}
+
 // Type definitions for services
 export interface Service {
-  categories: ServiceCategory,
+  categories: ServiceCategory[],
   id: number;
   title: string;
   owner: string;

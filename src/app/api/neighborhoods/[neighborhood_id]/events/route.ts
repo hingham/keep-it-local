@@ -12,7 +12,7 @@ import { HTTPError } from '@/app/api/types/httpError';
  */
 export async function GET(
   request: Request,
-  { params }: { params: { neighborhood_id: string } }
+  { params }: { params: Promise<{ neighborhood_id: string }> }
 ): Promise<NextResponse<Event[] | HTTPError>> {
   try {
     const { neighborhood_id } = await params;
@@ -84,10 +84,10 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { neighborhood_id: string } }
+  { params }: { params: Promise<{ neighborhood_id: string }> }
 ): Promise<NextResponse<Event | HTTPError>> {
   try {
-    const { neighborhood_id } = params;
+    const { neighborhood_id } = await params;
     const neighborhoodId = parseInt(neighborhood_id);
 
     if (isNaN(neighborhoodId)) {

@@ -29,10 +29,10 @@ import { HTTPError } from '@/app/api/types/httpError';
  */
 export async function GET(
   request: Request,
-  { params }: { params: { neighborhood_id: string, id: string } }
+  { params }: { params: Promise<{ neighborhood_id: string, id: string }> }
 ): Promise<NextResponse<Service | HTTPError>> {
   try {
-    const { neighborhood_id, id } = params;
+    const { neighborhood_id, id } = await params;
     console.log({neighborhood_id, id})
     const neighborhoodId = parseInt(neighborhood_id);
     const serviceId = parseInt(id);

@@ -5,10 +5,11 @@ import { put } from '@/lib/storage';
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const eventId = parseInt(params.id);
+    const myParams = await params
+    const eventId = parseInt(myParams.id);
     
     if (isNaN(eventId)) {
       return NextResponse.json(
@@ -58,10 +59,10 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const eventId = parseInt(params.id);
+    const eventId = parseInt((await params).id);
     
     if (isNaN(eventId)) {
       return NextResponse.json(

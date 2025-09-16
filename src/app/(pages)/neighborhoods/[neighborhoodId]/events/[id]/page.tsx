@@ -1,11 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
-import { Event, Neighborhood } from '@/types/events';
+import { Event } from '@/types/events';
 import { ItemDetails } from '@/components/ItemDetails/itemDetails';
 import ErrorComponent from '@/components/ErrorComponent/errorComponent';
 import Back from '@/components/Breadcrumb/Back';
