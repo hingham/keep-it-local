@@ -34,11 +34,11 @@ export default function NeighborhoodServicesPage() {
         const servicesData = await servicesRes.json();
 
         setNeighborhood({
-          id: services[0]?.neighborhood_id || 0,
-          neighborhood: services[0]?.neighborhood || '',
-          city: services[0]?.city || '',
-          state: services[0]?.state || '',
-          macro_neighborhood: services[0]?.macro_neighborhood || ''
+          id: servicesData[0]?.neighborhood_id || 0,
+          neighborhood: servicesData[0]?.neighborhood || '',
+          city: servicesData[0]?.city || '',
+          state: servicesData[0]?.state || '',
+          macro_neighborhood: servicesData[0]?.macro_neighborhood || ''
         });
         setServices(servicesData);
       } catch (err) {
@@ -51,7 +51,7 @@ export default function NeighborhoodServicesPage() {
     if (neighborhoodId) {
       fetchData();
     }
-  }, [neighborhoodId, services]);
+  }, [neighborhoodId]);
 
   const handleCategoryFilter = (category: ServiceCategory | 'all') => {
     setSelectedCategory(category);
