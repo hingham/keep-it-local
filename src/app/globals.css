@@ -2,20 +2,54 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
-}
+  --foreground: #171717;  
+  
+  /* Earth-tone color scheme for light mode */
+  --color-primary: oklch(37.1% 0 0);
+  --color-primary-dark: oklch(20.463% 0.00002 271.152); /* green-600 */
+  --color-secondary: #789723;
+  --color-secondary-dark: #5e7719;
+  --color-accent: #89a931; /* green-600 */
+  --color-background: #ffffff; /* white */
+  --color-surface: #f9fafb; /* gray-50 */
+  --color-text: #111827; /* gray-900 */
+  --color-text-secondary: #6b7280; /* gray-500 */
+} 
 
-@theme inline {
+/**
+To reference these colors, use tailwinds prefixes, e.g. bg- or text- and the name excluding --color. For example: bg-primary or text-secondary
+*/
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  
+  /* Custom earth-tone colors */
+  --color-secondary: var(--color-accent);
+  --color-secondary-dark: var(--color-secondary-dark);
+  --color-primary: var(--color-primary);
+  --color-primary-dark: var(--color-primary-dark);
+  --color-accent: var(--color-accent);
+  --color-surface: var(--color-surface);
+  --color-text: var(--color-text);
+  --color-text-secondary: var(--color-text-secondary);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    
+    /* Earth-tone color scheme for dark mode */
+    --color-primary: #4ade80; /* green-400 */
+    --color-primary-dark: #22c55e; /* green-500 */
+    --color-secondary: #c4b5fd; /* purple-300 */
+    --color-accent: #fbbf24; /* amber-400 */
+    --color-background: #111827; /* gray-900 */
+    --color-surface: #1f2937; /* gray-800 */
+    --color-text: #f3f4f6; /* gray-100 */
+    --color-text-secondary: #9ca3af; /* gray-400 */
   }
 }
 
