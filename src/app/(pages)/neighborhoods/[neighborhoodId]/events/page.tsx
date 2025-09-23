@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { EventCategory, Neighborhood, Event } from '@/types/events';
-import Header from '@/components/Header/header';
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
 import CardGrid from '@/components/CardGrid/cardGrid';
 import ErrorComponent from '@/components/ErrorComponent/errorComponent';
 import CategoryFilter from '@/components/CategoryFilter/categoryFilter';
+import NewListingButton from './newListing';
 
 export default function NeighborhoodEventsPage() {
   const params = useParams();
@@ -88,8 +88,8 @@ export default function NeighborhoodEventsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
+      <div className="container mx-auto px-4 py-8 flex-1">
         <Breadcrumb items={[
           { label: neighborhood.city.toUpperCase(), href: `/${neighborhood.city}` },
           { label: neighborhood.neighborhood, href: `/neighborhoods/${encodeURIComponent(neighborhoodId)}` },
@@ -97,10 +97,9 @@ export default function NeighborhoodEventsPage() {
         ]} />
 
         {/* Header */}
-        <Header
-          title={`Events in ${neighborhood.neighborhood}`}
-          subtitle={`${neighborhood.city}, ${neighborhood.state} • ${neighborhood.macro_neighborhood}`}
-        />
+        {/* <Header
+          title={`${neighborhood.neighborhood} Events`}
+        /> */}
 
         <CategoryFilter<EventCategory, Event>
           handleCategoryFilter={handleCategoryFilter}
@@ -109,55 +108,6 @@ export default function NeighborhoodEventsPage() {
           items={events}
           filteredItems={filteredEvents}
         />
-
-        {/* Category Filter Buttons */}
-        {/* <div className="mb-8">
-          <div className="flex flex-wrap gap-3">
-            <button
-              onClick={() => handleCategoryFilter('all')}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 ${selectedCategory === 'all'
-                  ? 'bg-blue-600 text-white shadow-md'
-                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
-                }`}
-            >
-              All Events ({events.length})
-            </button>
-
-            {Object.values(EventCategory).map((category) => {
-              const categoryCount = events.filter(e => {
-                const categories = Array.isArray(e.categories) ? e.categories : [e.categories];
-                return categories.includes(category);
-              }).length;
-
-              // Define colors for each category
-              const getCategoryColor = () => {
-                return 'bg-blue-600';
-              };
-
-              // Capitalize first letter for display
-              const displayName = category.charAt(0).toUpperCase() + category.slice(1);
-
-              return (
-                <button
-                  key={category}
-                  onClick={() => handleCategoryFilter(category)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 ${selectedCategory === category
-                      ? `${getCategoryColor()} text-white shadow-md`
-                      : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
-                    }`}
-                >
-                  {displayName} ({categoryCount})
-                </button>
-              );
-            })}
-          </div>
-
-          {selectedCategory !== 'all' && (
-            <div className="mt-3 text-sm text-gray-600 dark:text-gray-400">
-              Showing {filteredEvents.length} {selectedCategory} events
-            </div>
-          )}
-        </div> */}
 
         {/* Events Grid */}
         <CardGrid
@@ -176,6 +126,10 @@ export default function NeighborhoodEventsPage() {
               : `No ${selectedCategory} events found in ${neighborhood.neighborhood}`
           }
         />
+      </div>
+      {/* Create New Listing Button - Fixed at bottom */}
+      <div className="sticky bottom-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4 shadow-lg">
+          <NewListingButton neighborhoodId={neighborhoodId} />
       </div>
     </div>
   );

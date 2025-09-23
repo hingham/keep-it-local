@@ -1,6 +1,6 @@
 <!-- Use this file to provide workspace-specific custom instructions to Copilot. For more details, visit https://code.visualstudio.com/docs/copilot/copilot-customization#_use-a-githubcopilotinstructionsmd-file -->
 
-# Keep it Local - Project Instructions
+# The Local Board - Project Instructions
 
 This is a Next.js project built with TypeScript, React, and Vercel Postgres database. The project supports local businesses and communities through technology.
 

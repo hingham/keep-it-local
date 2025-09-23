@@ -108,7 +108,7 @@ export function ItemDetails({ item }: { item: Service | Event }) {
     }
   };
 
-  // Parse categories and date_list if they are PostgreSQL arrays (Event-specific)
+  // Parse categories and date_list if they are PostgreSQL <arrays (>Event-specific)
   const categories = 'categories' in item && typeof item.categories === 'string'
     ? parsePostgreSQLArray(item.categories)
     : 'categories' in item ? item.categories : null;
@@ -130,46 +130,39 @@ export function ItemDetails({ item }: { item: Service | Event }) {
           className="object-cover"
           priority
         />
+        {/* Share Button */}
+        <button
+          onClick={handleShare}
+          disabled={isSharing}
+          className="absolute bottom-4 right-4 bg-white/90 hover:bg-white text-gray-700 px-3 py-2 rounded-lg shadow-lg backdrop-blur-sm transition-all duration-200 flex items-center text-sm font-medium disabled:opacity-50"
+        >
+          {isSharing ? (
+            <>
+              <svg className="w-4 h-4 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Sharing...
+            </>
+          ) : copySuccess ? (
+            <>
+              <svg className="w-4 h-4 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              Copied!
+            </>
+          ) : (
+            <>
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+              </svg>
+              Share
+            </>
+          )}
+        </button>
       </div>
 
       {/* Details */}
       <div>
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-            {item.title}
-          </h1>
-
-          {/* Share Button */}
-          <button
-            onClick={handleShare}
-            disabled={isSharing}
-            className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {isSharing ? (
-              <>
-                <svg className="w-4 h-4 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-                Sharing...
-              </>
-            ) : copySuccess ? (
-              <>
-                <svg className="w-4 h-4 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                Copied!
-              </>
-            ) : (
-              <>
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
-                </svg>
-                Share
-              </>
-            )}
-          </button>
-        </div>
-
         <div className="space-y-3">
           {/* Service-specific details */}
           {'owner' in item && (
@@ -177,7 +170,7 @@ export function ItemDetails({ item }: { item: Service | Event }) {
               <Detail svg={<OwnerIcon />}>
                 <span>Offered by {item.owner}</span>
               </Detail>
-              
+
               <Detail svg={<LocationIcon />}>
                 <span>{item.neighborhood}, {item.city}, {item.state}</span>
               </Detail>
@@ -192,7 +185,7 @@ export function ItemDetails({ item }: { item: Service | Event }) {
           {/* Service contact details */}
           {'contact_email' in item && item.contact_email && (
             <Detail svg={<EmailIcon />}>
-              <a href={`mailto:${item.contact_email}`} className="text-blue-600 hover:underline">
+              <a href={`mailto:${item.contact_email}`} className="basic-a-link">
                 {item.contact_email}
               </a>
             </Detail>
@@ -200,7 +193,7 @@ export function ItemDetails({ item }: { item: Service | Event }) {
 
           {'contact_number' in item && item.contact_number && (
             <Detail svg={<PhoneIcon />}>
-              <a href={`tel:${item.contact_number}`} className="text-blue-600 hover:underline">
+              <a href={`tel:${item.contact_number}`} className="basic-a-link">
                 {item.contact_number}
               </a>
             </Detail>
@@ -231,7 +224,7 @@ export function ItemDetails({ item }: { item: Service | Event }) {
           {/* Website (for both Events and Services) */}
           {item.website && (
             <Detail svg={<WebsiteIcon />}>
-              <a href={item.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+              <a href={item.website} target="_blank" rel="noopener noreferrer" className="basic-a-link">
                 {item.website}
               </a>
             </Detail>
@@ -242,15 +235,15 @@ export function ItemDetails({ item }: { item: Service | Event }) {
         <div className="mt-6 space-y-4">
           {/* Categories */}
           {categories && categories.length > 0 && (
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                Categories
+            <div className="flex">
+              <h3 className="text-md font-semibold text-gray-900 dark:text-gray-100 mb-2 mr-3">
+                Categories:
               </h3>
               <div className="flex flex-wrap gap-2">
                 {categories.map((category: string, index: number) => (
                   <span
                     key={index}
-                    className="inline-block bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm font-medium px-3 py-1 rounded-full"
+                    className="inline-block bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm font-medium p-1 rounded-md"
                   >
                     {category.charAt(0).toUpperCase() + category.slice(1)}
                   </span>

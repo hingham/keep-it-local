@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Footer from "@/components/Footer";
+import SiteHeader from "@/components/Header/siteHeader";
 
 interface City {
   id: number;
@@ -46,14 +47,7 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-background text-text-primary">
       <main className="flex-1 flex flex-col gap-[32px] items-center sm:items-start p-8 pb-20 gap-16 sm:p-20">
-        <div className="text-center mx-auto">
-          <h1 className="text-4xl sm:text-6xl font-bold text-text-primary mb-4">
-            Keep it Local
-          </h1>
-          <p className="text-lg text-text-secondary max-w-2xl mb-6">
-            Supporting local businesses and communities through technology
-          </p>
-        </div>
+        <SiteHeader />
 
         {/* Site Body */}
         <div className="w-full max-w-4xl mx-auto">
@@ -94,18 +88,6 @@ export default function Home() {
         </div>
 
       </main>
-
-      {/* Create New Listing Button - Fixed at bottom */}
-      <div className="sticky bottom-0 bg-background border-t border-gray-200 dark:border-gray-700 p-4 mt-auto">
-        <div className="max-w-4xl mx-auto text-left">
-          <Link
-            href="/create"
-            className="inline-flex items-center px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium"
-          >
-            + Create New Listing
-          </Link>
-        </div>
-      </div>
 
       <Footer />
     </div>

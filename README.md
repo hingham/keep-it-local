@@ -1,4 +1,4 @@
-# Keep it Local
+# The Local Board
 
 A Next.js project built with TypeScript, React, and Vercel Postgres database. This project supports local businesses and communities through technology.
 

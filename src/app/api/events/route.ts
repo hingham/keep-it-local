@@ -3,13 +3,14 @@ import { pool } from '@/lib/db';
 import { EventCategory } from '@/types/events';
 import { parsePostgreSQLArray } from '@/lib/utils'
 import { put } from '@/lib/storage';
+import { transporter } from '@/lib/api-helpers';
 
 export async function GET(request: Request) {
   try {
     // Parse query string parameters
     const { searchParams } = new URL(request.url);
     const categoryFilter = searchParams.get('category');
-    
+
     // Validate category filter if provided
     if (categoryFilter && !Object.values(EventCategory).includes(categoryFilter as EventCategory)) {
       return NextResponse.json(
@@ -19,7 +20,7 @@ export async function GET(request: Request) {
     }
 
     const client = await pool.connect();
-    
+
     // Build query with optional category filter
     let query = `
       SELECT 
@@ -31,21 +32,22 @@ export async function GET(request: Request) {
       FROM events e
       JOIN neighborhoods n ON e.neighborhood_id = n.id
       JOIN cities c ON n.city_id = c.id
-      WHERE e.verified = false
+      WHERE e.verified = true
     `;
-    
+
     const queryParams: (number | string)[] = [];
-    
+
     // Add category filter if provided
     if (categoryFilter) {
       query += ` WHERE $1 = ANY(e.categories)`;
       queryParams.push(categoryFilter);
     }
-    
+
     query += ` ORDER BY e.date ASC`;
-    
-    const result = await client.query(query, queryParams);
-    
+
+    const result = await client.query(query);
+    console.log({result})
+
     // Parse PostgreSQL array for categories field
     result.rows.forEach((row) => {
       if (row.categories) {
@@ -54,7 +56,7 @@ export async function GET(request: Request) {
     });
 
     client.release();
-    
+
     return NextResponse.json(result.rows);
   } catch (error) {
     console.error('Error fetching events:', error);
@@ -72,15 +74,15 @@ export async function POST(request: Request) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let eventData: any;
     let imageUrl: string | null = null;
-    console.log({contentType})
+    console.log({ contentType })
 
     if (contentType?.includes('multipart/form-data')) {
       // Handle FormData (with file upload)
       const formData = await request.formData();
-      
+
       // Extract image file
       const imageFile = formData.get('image') as File | null;
-      
+
       // Upload image to Vercel Blob if provided
       if (imageFile && imageFile.size > 0) {
         try {
@@ -136,16 +138,16 @@ export async function POST(request: Request) {
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) 
        RETURNING *`,
       [
-        date, 
-        recurring || false, 
-        title, 
-        time, 
-        location, 
+        date,
+        recurring || false,
+        title,
+        time,
+        location,
         website,
-        categories, 
-        neighborhood_id, 
-        eventData.imageUrl, 
-        verified || false, 
+        categories,
+        neighborhood_id,
+        eventData.imageUrl,
+        verified || false,
         description,
         delete_after,
         internal_id,
@@ -154,7 +156,18 @@ export async function POST(request: Request) {
     );
     client.release();
 
-    // TODO: Add nodemailer to send email here at this step
+    // TODO: Update this to use helper functions - see service route
+    if (internal_creator_contact) {
+      const info = await transporter.sendMail({
+        from: `The Local Board`,
+        to: internal_creator_contact,
+        subject: "Hello ✔",
+        text: title, // plain‑text body
+        html: `<b>${title}</b> ${description}`, // HTML body
+      });
+
+      console.log("Message sent:", info.messageId)
+    }
 
     return NextResponse.json(result.rows[0]);
   } catch (error) {
