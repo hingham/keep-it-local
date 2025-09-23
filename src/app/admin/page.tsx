@@ -83,6 +83,7 @@ export default function AdminPage() {
   };
 
   const breadcrumbItems = [
+    { label: 'The Local Board', href: '/' },
     { label: 'Admin' }
   ];
 
@@ -126,7 +127,6 @@ export default function AdminPage() {
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-between mb-6">
             <Breadcrumb items={breadcrumbItems} />
-            <QRCodeButton />
           </div>
           <div className="text-center py-8 text-red-600">
             <div className="text-xl">Error: {error}</div>
@@ -147,7 +147,6 @@ export default function AdminPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">
           <Breadcrumb items={breadcrumbItems} />
-          <QRCodeButton />
         </div>
 
         <Header

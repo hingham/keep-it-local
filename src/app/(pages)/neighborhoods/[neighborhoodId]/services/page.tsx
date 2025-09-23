@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import Header from '@/components/Header/header';
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
@@ -9,6 +8,7 @@ import CardGrid from '@/components/CardGrid/cardGrid';
 import { Service, Neighborhood, ServiceCategory } from '@/types/events';
 import ErrorComponent from '@/components/ErrorComponent/errorComponent';
 import CategoryFilter from '@/components/CategoryFilter/categoryFilter';
+import NewListingButton from '../events/newListing';
 
 export default function NeighborhoodServicesPage() {
   const params = useParams();
@@ -86,8 +86,8 @@ export default function NeighborhoodServicesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
+      <div className="container mx-auto px-4 py-8 flex-1">
         <Breadcrumb items={[
           { label: neighborhood.city.toUpperCase(), href: `/${neighborhood.city}` },
           { label: neighborhood.neighborhood, href: `/neighborhoods/${encodeURIComponent(neighborhoodId)}` },
@@ -96,8 +96,8 @@ export default function NeighborhoodServicesPage() {
 
         {/* Header */}
         <Header
-          title={`Services in ${neighborhood.neighborhood}`}
-          subtitle={`${neighborhood.city}, ${neighborhood.state} • ${neighborhood.macro_neighborhood}`}
+          title={'Free or low cost community events.'}
+          subtitle={`${neighborhood.city}, ${neighborhood.state} • ${neighborhood.macro_neighborhood} • ${neighborhood.neighborhood}`}
         />
 
         <CategoryFilter<ServiceCategory, Service>
@@ -116,6 +116,11 @@ export default function NeighborhoodServicesPage() {
           getDetails={(service) => (service as Service).owner || ''}
           emptyMessage={`No services found in ${neighborhood.neighborhood}`}
         />
+      </div>
+
+      {/* Create New Listing Button - Fixed at bottom */}
+      <div className="sticky bottom-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4 shadow-lg">
+        <NewListingButton neighborhoodId={neighborhoodId} />
       </div>
     </div>
   );

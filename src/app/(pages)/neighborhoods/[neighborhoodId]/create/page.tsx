@@ -5,6 +5,42 @@ import { useParams, useRouter } from 'next/navigation';
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
 import { CreateEvent, CreateService, EventCategory, Neighborhood, ServiceCategory } from '@/types/events';
 
+const ItemDefinition = ({ definition }: { definition: { title: string; bullets: { bullet: string; description: string }[] } }) => {
+  return (
+    <div className='bg-surface p-4 rounded-lg mb-8'>
+      <h2 className="text-xl font-semibold text-text mb-2">{definition.title}</h2>
+      {definition.bullets.map((item, index) => (
+        <div key={index} className="mb-0">
+          <span className="font-bold text-sm">{item.bullet}:</span> <span className="text-sm text-text-secondary">{item.description}</span>
+        </div>
+      ))}
+      <p className="text-sm text-text-secondary mt-2">*If your event doesn&apos;t fit these guidelines, consider creating a different type of listing.</p>
+    </div>
+  )
+}
+
+const eventDefinition = {
+  title: 'What is a Community Event?',
+  bullets: [
+    { bullet: "Accessible", description: 'Free, donation-based, or affordably priced (under $10).' },
+    { bullet: "Local", description: 'Created by and for people in the neighborhood or nearby community.' },
+    { bullet: "Unique", description: 'Event has a special theme or community purpose (e.g., a fundraiser yoga session, a block cleanup, a cultural story time).' },
+    { bullet: "Connection", description: 'Designed to bring neighbors together in a genuine, welcoming way — no sales pitches, promotions, or recruitment agendas.' },
+    { bullet: "Spirit", description: 'Focused on fostering belonging, shared experience, and positive impact for the local area.' }
+  ]
+}
+
+const serviceDefinition = {
+  title: 'What is a Community Service?',
+  bullets: [
+    { bullet: "Local", description: 'Offered by neighbors within the community.' },
+    { bullet: "Skilled", description: 'Showcases personal skills, trades, or talents (e.g., tutoring, pet care, home repairs).' },
+    { bullet: "Specific", description: 'More than broad business ads — focused on a clear, useful offering.' },
+    { bullet: "Trustworthy", description: 'Leverages the convenience and reliability of hiring someone nearby.' },
+    { bullet: "Community Value", description: 'Strengthens local connections while meeting everyday needs.' }
+  ]
+}
+
 export default function CreateListingPage() {
   const neighborhoodId = useParams().neighborhoodId as string;
   const router = useRouter();
@@ -147,6 +183,15 @@ export default function CreateListingPage() {
     }));
   };
 
+  const handleServiceCategoryToggle = (category: ServiceCategory) => {
+    setServiceData(prev => ({
+      ...prev,
+      categories: prev.categories.includes(category)
+        ? prev.categories.filter(c => c !== category)
+        : [...prev.categories, category]
+    }));
+  };
+
 
   const updateSharedFormData = (item: CreateEvent | CreateService, formData: FormData) => {
     // Shared
@@ -220,6 +265,7 @@ export default function CreateListingPage() {
 
       // Add all service data to FormData
       formData.append('owner', serviceData.owner);
+      formData.append('service_category', JSON.stringify(serviceData.categories));
       if (serviceData.contact_number) formData.append('contact_number', serviceData.contact_number);
       if (serviceData.contact_email) formData.append('contact_email', serviceData.contact_email);
       formData.append('delete_after', serviceData.delete_after || new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString()); // Default to 3 weeks from now
@@ -284,11 +330,11 @@ export default function CreateListingPage() {
   }
 
   function handleDateListChange(e: React.ChangeEvent<HTMLInputElement>, index: number): void {
-      setEventData(prev => {
-        const newDateList = [...(prev.date_list || [])];
-        newDateList[index] = e.target.value;
-        return { ...prev, date_list: newDateList };
-      });
+    setEventData(prev => {
+      const newDateList = [...(prev.date_list || [])];
+      newDateList[index] = e.target.value;
+      return { ...prev, date_list: newDateList };
+    });
   };
 
   function removeAdditionalDates(): void {
@@ -330,6 +376,8 @@ export default function CreateListingPage() {
               Create Service
             </button>
           </div>
+
+          <ItemDefinition definition={listingType === 'event' ? eventDefinition : serviceDefinition} />
 
           {/* Image Upload Section */}
           <div className="mb-8">
@@ -378,161 +426,163 @@ export default function CreateListingPage() {
 
           {/* Event Form */}
           {listingType === 'event' && (
-            <form onSubmit={handleEventSubmit} className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">
-                  Event Title *
-                  <input
-                    type="text"
-                    name="title"
-                    required
-                    value={eventData.title}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-background text-text focus:outline-none focus:ring-2 focus:ring-primary mt-2"
-                    placeholder="Enter event title"
-                  />
-                </label>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">
-                  Location *
-                  <input
-                    type="text"
-                    name="location"
-                    required
-                    value={eventData.location}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-background text-text focus:outline-none focus:ring-2 focus:ring-primary mt-2"
-                    placeholder="Enter event location"
-                  />
-                </label>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">
-                  Website
-                  <input
-                    type="url"
-                    name="website"
-                    value={eventData.website}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-background text-text focus:outline-none focus:ring-2 focus:ring-primary mt-2"
-                    placeholder="https://example.com"
-                  />
-                </label>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <>
+              <form onSubmit={handleEventSubmit} className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-text mb-2">
-                    Date *
+                    Event Title *
                     <input
-                      type="date"
-                      name="date"
+                      type="text"
+                      name="title"
                       required
-                      value={eventData.date}
+                      value={eventData.title}
                       onChange={handleInputChange}
                       className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-background text-text focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                      placeholder="Enter event title"
                     />
                   </label>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-text mb-2">
-                    Time
+                    Location *
                     <input
-                      type="time"
-                      name="time"
-                      value={eventData.time}
+                      type="text"
+                      name="location"
+                      required
+                      value={eventData.location}
                       onChange={handleInputChange}
                       className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-background text-text focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                      placeholder="Enter event location"
                     />
                   </label>
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">
-                  Categories
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {Object.values(EventCategory).map(category => (
-                    <button
-                      key={category}
-                      type="button"
-                      onClick={() => handleCategoryToggle(category)}
-                      className={`px-4 py-2 rounded-full border transition-colors ${eventData.categories.includes(category)
-                        ? 'bg-primary text-white border-primary'
-                        : 'bg-background text-text border-gray-300 dark:border-gray-600 hover:border-primary'
-                        }`}
-                    >
-                      {category.charAt(0).toUpperCase() + category.slice(1)}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    name="recurring"
-                    checked={eventData.recurring}
-                    onChange={handleRecurringChange}
-                    className="rounded border-gray-300 text-primary focus:ring-primary"
-                  />
-                  <span className="text-sm text-text">This is a recurring event</span>
-                </label>
-              </div>
-              {eventData.recurring && (
                 <div>
-                  <div className="text-sm w-full bg-gray-100 p-2 rounded-md mb-1" onClick={addAdditionalDates}>
-                    Add Additional Dates
-                  </div>
-                  <div className="text-sm w-full bg-gray-100 p-2 rounded-md mb-1" onClick={removeAdditionalDates}>
-                    Remove Additional Dates
-                  </div>
                   <label className="block text-sm font-medium text-text mb-2">
-                    Additional Dates
-                    {eventData.date_list && eventData.date_list.length > 0 && (
-                      eventData.date_list.map((date, index) => (
-                        <input
-                          key={index}
-                          type="date"
-                          name="recurrence_pattern"
-                          value={date}
-                          onChange={(e) => handleDateListChange(e, index)}
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-background text-text focus:outline-none focus:ring-2 focus:ring-primary mt-2"
-                        />
-                      ))
-                    )}
+                    Website
+                    <input
+                      type="url"
+                      name="website"
+                      value={eventData.website}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-background text-text focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                      placeholder="https://example.com"
+                    />
                   </label>
                 </div>
-              )}
 
-              <div>
-                <label className="block text-sm font-medium text-text mb-2">
-                  Description
-                  <textarea
-                    name="description"
-                    value={eventData.description}
-                    onChange={handleInputChange}
-                    rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-background text-text focus:outline-none focus:ring-2 focus:ring-primary mt-2"
-                    placeholder="Describe your event..."
-                  />
-                </label>
-              </div>
-              {getInternalFormFields(eventData)}
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-secondary text-white py-3 px-4 rounded-md font-medium hover:bg-secondary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? 'Creating Event...' : 'Create Event'}
-              </button>
-            </form>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-text mb-2">
+                      Date *
+                      <input
+                        type="date"
+                        name="date"
+                        required
+                        value={eventData.date}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-background text-text focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                      />
+                    </label>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-text mb-2">
+                      Time
+                      <input
+                        type="time"
+                        name="time"
+                        value={eventData.time}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-background text-text focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                      />
+                    </label>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    Categories
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {Object.values(EventCategory).map(category => (
+                      <button
+                        key={category}
+                        type="button"
+                        onClick={() => handleCategoryToggle(category)}
+                        className={`px-4 py-2 rounded-full border transition-colors ${eventData.categories.includes(category)
+                          ? 'bg-primary text-white border-primary'
+                          : 'bg-background text-text border-gray-300 dark:border-gray-600 hover:border-primary'
+                          }`}
+                      >
+                        {category.charAt(0).toUpperCase() + category.slice(1)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      name="recurring"
+                      checked={eventData.recurring}
+                      onChange={handleRecurringChange}
+                      className="rounded border-gray-300 text-primary focus:ring-primary"
+                    />
+                    <span className="text-sm text-text">This is a recurring event</span>
+                  </label>
+                </div>
+                {eventData.recurring && (
+                  <div>
+                    <div className="text-sm w-full bg-gray-100 p-2 rounded-md mb-1" onClick={addAdditionalDates}>
+                      Add Additional Dates
+                    </div>
+                    <div className="text-sm w-full bg-gray-100 p-2 rounded-md mb-1" onClick={removeAdditionalDates}>
+                      Remove Additional Dates
+                    </div>
+                    <label className="block text-sm font-medium text-text mb-2">
+                      Additional Dates
+                      {eventData.date_list && eventData.date_list.length > 0 && (
+                        eventData.date_list.map((date, index) => (
+                          <input
+                            key={index}
+                            type="date"
+                            name="recurrence_pattern"
+                            value={date}
+                            onChange={(e) => handleDateListChange(e, index)}
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-background text-text focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                          />
+                        ))
+                      )}
+                    </label>
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-sm font-medium text-text mb-2">
+                    Description
+                    <textarea
+                      name="description"
+                      value={eventData.description}
+                      onChange={handleInputChange}
+                      rows={4}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-background text-text focus:outline-none focus:ring-2 focus:ring-primary mt-2"
+                      placeholder="Describe your event..."
+                    />
+                  </label>
+                </div>
+                {getInternalFormFields(eventData)}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="button-basic"
+                >
+                  {loading ? 'Creating Event...' : 'Create Event'}
+                </button>
+              </form>
+            </>
           )}
 
           {/* Service Form */}
@@ -582,6 +632,28 @@ export default function CreateListingPage() {
                 </label>
               </div>
 
+              {/* Service Categories */}
+              <div>
+                <label className="block text-sm font-medium text-text mb-2">
+                  Service Categories
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {Object.values(ServiceCategory).map((category) => (
+                    <button
+                      key={category}
+                      type="button"
+                      onClick={() => handleServiceCategoryToggle(category)}
+                      className={`px-4 py-2 rounded-full border transition-colors ${serviceData.categories.includes(category)
+                        ? 'bg-primary text-white border-primary'
+                        : 'bg-background text-text border-gray-300 dark:border-gray-600 hover:border-primary'
+                        }`}
+                    >
+                      {category.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-text mb-2">
@@ -629,7 +701,7 @@ export default function CreateListingPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-secondary text-white py-3 px-4 rounded-md font-medium hover:bg-secondary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="button-basic"
               >
                 {loading ? 'Creating Service...' : 'Create Service'}
               </button>

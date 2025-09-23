@@ -12,14 +12,14 @@ interface BreadcrumbProps {
 export default function Breadcrumb({ items }: BreadcrumbProps) {
   return (
     <div className="mb-6">
-      <nav className="flex items-center space-x-2 text-gray-500 dark:text-gray-400">
+      <nav className="flex items-center space-x-2 text-text-500 dark:text-gray-400 text-2xl md:text-3xl font-bold">
         {items.map((item, index) => (
           <div key={index} className="flex items-center space-x-2">
             {index > 0 && <span>/</span>}
             {item.href ? (
-              <Link 
-                href={item.href} 
-                className="hover:text-blue-600 dark:hover:text-blue-400"
+              <Link
+                href={item.href}
+                className={"link"}
               >
                 {item.label}
               </Link>
@@ -29,6 +29,7 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
           </div>
         ))}
       </nav>
+      <hr className="border-gray-300 dark:border-gray-700 mt-2" />
     </div>
   );
 }

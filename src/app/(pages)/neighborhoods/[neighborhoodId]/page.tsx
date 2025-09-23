@@ -3,12 +3,11 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import Header from '@/components/Header/header';
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
 import { Neighborhood, Event, Service } from '@/types/events';
 import CardGrid from '@/components/CardGrid/cardGrid';
 import ErrorComponent from '@/components/ErrorComponent/errorComponent';
-import QRCodeButton from '@/components/QRCodeButton/QRCodeButton';
+import NewListingButton from './events/newListing';
 
 export default function NeighborhoodPage() {
   const params = useParams();
@@ -81,19 +80,19 @@ export default function NeighborhoodPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
       <div className="flex-1">
         <div className="container mx-auto px-4 py-8">
-          <div className="flex justify-between mb-6">
+          <div className="flex justify-between">
             <Breadcrumb items={[
               { label: neighborhood.city.toUpperCase(), href: `/${encodeURIComponent(neighborhood.city.toLowerCase())}` },
               { label: neighborhood.neighborhood }
             ]} />
-            <QRCodeButton />
+            {/* <QRCodeButton /> */}
           </div>
 
           {/* Header */}
-          <Header
+          {/* <Header
             title={neighborhood.neighborhood}
             subtitle={`${neighborhood.city}, ${neighborhood.state} • ${neighborhood.macro_neighborhood}`}
-          />
+          /> */}
 
           {/* Content Sections */}
           <div className="space-y-12 pb-20">
@@ -102,9 +101,9 @@ export default function NeighborhoodPage() {
               <div className="flex items-center justify-between mb-6">
                 <Link
                   href={`/neighborhoods/${encodeURIComponent(neighborhoodId)}/events`}
-                  className="group"
+                  className="group link"
                 >
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200 cursor-pointer">
+                  <h2 className="text-xl md:text-2xl font-bold transition-colors duration-200 cursor-pointer">
                     Upcoming Events
                     <svg className="inline-block w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -134,9 +133,9 @@ export default function NeighborhoodPage() {
               <div className="flex items-center justify-between mb-6">
                 <Link
                   href={`/neighborhoods/${encodeURIComponent(neighborhoodId)}/services`}
-                  className="group"
+                  className="group link"
                 >
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200 cursor-pointer">
+                  <h2 className="text-xl md:text-2xl font-bold transition-colors duration-200">
                     Local Services
                     <svg className="inline-block w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -159,14 +158,7 @@ export default function NeighborhoodPage() {
 
       {/* Create New Listing Button - Fixed at bottom */}
       <div className="sticky bottom-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4 shadow-lg">
-        <div className="max-w-4xl mx-auto text-left">
-          <Link
-            href={`/neighborhoods/${neighborhoodId}/create`}
-            className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-md"
-          >
-            + Create New Listing
-          </Link>
-        </div>
+        <NewListingButton neighborhoodId={neighborhoodId} />
       </div>
     </div>
   );

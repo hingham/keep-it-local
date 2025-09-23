@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Keep it Local",
+  title: "The Local Board",
   description: "Helping communities come together, and discover local events and services",
 };
 

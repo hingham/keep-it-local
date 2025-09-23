@@ -1,4 +1,4 @@
--- Updated schema for Keep it Local
+-- Updated schema for The Local Board
 -- Run this directly in Vercel Postgres dashboard or use the /api/setup endpoint
 
 -- Drop existing tables if they exist
