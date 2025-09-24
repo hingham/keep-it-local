@@ -19,6 +19,7 @@
     "@types/qrcode": "^1.5.5",
     "@vercel/blob": "^1.1.1",
     "@vercel/postgres": "^0.10.0",
+    "dotenv": "^17.2.2",
     "next": "15.4.7",
     "nodemailer": "^7.0.6",
     "pg": "^8.16.3",

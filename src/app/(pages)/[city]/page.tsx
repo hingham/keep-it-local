@@ -1,6 +1,7 @@
 'use client';
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import Footer from "@/components/Footer";
 import { useParams } from "next/navigation";
@@ -39,7 +40,7 @@ export default function City() {
     };
 
     fetchNeighborhoods();
-  }, []);
+  }, [city]);
 
   // Group neighborhoods by macro_neighborhood
   const groupedNeighborhoods = neighborhoods.reduce((acc, neighborhood) => {
@@ -52,7 +53,7 @@ export default function City() {
   }, {} as Record<string, Neighborhood[]>);
   return (
     <div className="min-h-screen flex flex-col bg-background text-text-primary">
-      <main className="flex-1 flex flex-col gap-[32px] items-center sm:items-start p-8 pb-20 gap-16 sm:p-20">
+      <main className="flex-1 flex flex-col items-center sm:items-start p-8 pb-20 gap-16 sm:p-20">
         <div className="w-full max-w-4xl mx-auto">
 
           <SiteHeader>
@@ -70,28 +71,49 @@ export default function City() {
                 <div className="text-text-secondary">Loading neighborhoods...</div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 place-items-stretch gap-6">
-                {Object.entries(groupedNeighborhoods).map(([macroNeighborhood, neighborhoods]) => (
-                  <div key={macroNeighborhood} className="bg-surface rounded-lg p-6 shadow-md border border-gray-200 dark:border-gray-700">
-                    <h3 className="text-lg font-semibold text-text-primary mb-4">
-                      {macroNeighborhood}
-                    </h3>
-                    <ul className="space-y-2">
-                      {neighborhoods.map((neighborhood) => (
-                        <li key={neighborhood.id} className="text-text-secondary">
-                          <Link
-                            href={`/neighborhoods/${encodeURIComponent(neighborhood.id)}`}
-                            className="block hover:bg-primary/10 p-2 rounded transition-colors"
-                          >
-                            <div className="font-medium text-primary hover:text-primary-dark hover:underline">
-                              {neighborhood.neighborhood}
-                            </div>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
+              <div className="flex flex-col lg:flex-row gap-8">
+                {/* Neighborhoods Grid */}
+                <div className="flex-1">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 place-items-stretch gap-6">
+                    {Object.entries(groupedNeighborhoods).map(([macroNeighborhood, neighborhoods]) => (
+                      <div key={macroNeighborhood} className="bg-surface rounded-lg p-6 shadow-md border border-gray-200 dark:border-gray-700">
+                        <h3 className="text-lg font-semibold text-text-primary mb-4">
+                          {macroNeighborhood}
+                        </h3>
+                        <ul className="space-y-2">
+                          {neighborhoods.map((neighborhood) => (
+                            <li key={neighborhood.id} className="text-text-secondary">
+                              <Link
+                                href={`/neighborhoods/${encodeURIComponent(neighborhood.id)}`}
+                                className="block hover:bg-primary/10 md:p-2 rounded transition-colors"
+                              >
+                                <div className="font-medium text-primary hover:text-primary-dark hover:underline">
+                                  {neighborhood.neighborhood}
+                                </div>
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </div>
+
+                {/* Seattle Map - Goal is to have a clickable svg file here */}
+                
+                {city.toLowerCase() === 'seattle' && (
+                  <div className="lg:w-96 flex-shrink-0">
+                    <div className="bg-surface rounded-lg p-4 shadow-md border border-gray-200 dark:border-gray-700">
+                      <Image
+                        src="/seattle_neighborhood_map.png"
+                        alt="Seattle Neighborhood Map"
+                        width={500}
+                        height={400}
+                        className="w-full h-auto rounded-lg"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
