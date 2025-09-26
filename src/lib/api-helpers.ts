@@ -28,7 +28,7 @@ const transporter = isDevelopmentMode() ?
     secure: false, // true for 465, false for other ports
     auth: {
         user: "admin@thelocalboard.city",
-        pass: "=%U<r$>i'q)aK30yr#%>",
+        pass: process.env.PROD_MAIL_PASS,
     },
 })
 
