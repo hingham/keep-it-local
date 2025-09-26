@@ -3,13 +3,20 @@ import { pool } from '@/lib/db';
 import { EventCategory } from '@/types/events';
 import { parsePostgreSQLArray } from '@/lib/utils'
 import { put } from '@/lib/storage';
-import { transporter } from '@/lib/api-helpers';
-
+import { sendMail, isDevelopmentMode } from '@/lib/api-helpers';
+import { getEmailHtmlForItemCreation } from '@/lib/emailHtml';
+import { v4 as uuidv4 } from 'uuid';
+/**
+ * Allow fetching unverified items for review
+ * @param request 
+ * @returns 
+ */
 export async function GET(request: Request) {
   try {
     // Parse query string parameters
     const { searchParams } = new URL(request.url);
     const categoryFilter = searchParams.get('category');
+    const verifiedFilter = searchParams.get('verified')
 
     // Validate category filter if provided
     if (categoryFilter && !Object.values(EventCategory).includes(categoryFilter as EventCategory)) {
@@ -21,7 +28,7 @@ export async function GET(request: Request) {
 
     const client = await pool.connect();
 
-    // Build query with optional category filter
+    // Build query with optional filters
     let query = `
       SELECT 
         e.*,
@@ -32,21 +39,33 @@ export async function GET(request: Request) {
       FROM events e
       JOIN neighborhoods n ON e.neighborhood_id = n.id
       JOIN cities c ON n.city_id = c.id
-      WHERE e.verified = true
     `;
 
-    const queryParams: (number | string)[] = [];
+    const queryParams: (number | string | boolean)[] = [];
+    const conditions: string[] = [];
 
     // Add category filter if provided
     if (categoryFilter) {
-      query += ` WHERE $1 = ANY(e.categories)`;
       queryParams.push(categoryFilter);
+      conditions.push(`$${queryParams.length} = ANY(e.categories)`);
+    }
+
+    // Add verified filter if provided
+    if (verifiedFilter !== null) {
+      const isVerified = verifiedFilter === 'true';
+      queryParams.push(isVerified);
+      conditions.push(`e.verified = $${queryParams.length}`);
+    }
+
+    // Add WHERE clause if there are conditions
+    if (conditions.length > 0) {
+      query += ` WHERE ${conditions.join(' AND ')}`;
     }
 
     query += ` ORDER BY e.date ASC`;
 
-    const result = await client.query(query);
-    console.log({result})
+    const result = await client.query(query, queryParams);
+    console.log({ result })
 
     // Parse PostgreSQL array for categories field
     result.rows.forEach((row) => {
@@ -74,12 +93,12 @@ export async function POST(request: Request) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let eventData: any;
     let imageUrl: string | null = null;
-    console.log({ contentType })
-
+    
     if (contentType?.includes('multipart/form-data')) {
+      console.log({ contentType })
+      console.log({request})
       // Handle FormData (with file upload)
       const formData = await request.formData();
-
       // Extract image file
       const imageFile = formData.get('image') as File | null;
 
@@ -113,7 +132,6 @@ export async function POST(request: Request) {
         description: formData.get('description'),
         verified: formData.get('verified') === 'true',
         delete_after: formData.get('delete_after') || null,
-        internal_id: formData.get('internal_id') || null,
         internal_creator_contact: formData.get('internal_creator_contact') || null,
         imageUrl: imageUrl || formData.get('imageUrl') // Use uploaded image or provided URL
       };
@@ -122,7 +140,9 @@ export async function POST(request: Request) {
       eventData = await request.json();
     }
 
-    const { date, recurring, title, time, location, website, categories, neighborhood_id, description, verified, delete_after, internal_id, internal_creator_contact } = eventData;
+    const internal_id = uuidv4();
+
+    const { date, recurring, title, time, location, website, categories, neighborhood_id, description, verified, delete_after, internal_creator_contact } = eventData;
 
     // Validate required fields
     if (!date || !title || !neighborhood_id) {
@@ -155,18 +175,15 @@ export async function POST(request: Request) {
       ]
     );
     client.release();
+    console.log("results:", result.rows[0]);
 
     // TODO: Update this to use helper functions - see service route
     if (internal_creator_contact) {
-      const info = await transporter.sendMail({
-        from: `The Local Board`,
-        to: internal_creator_contact,
-        subject: "Hello ✔",
-        text: title, // plain‑text body
-        html: `<b>${title}</b> ${description}`, // HTML body
-      });
+      const subject = "Event Submitted The Local Board";
+      const sendToEmail = isDevelopmentMode() ? "receiver@example.com" : internal_creator_contact
+      const emailHtml = getEmailHtmlForItemCreation("event", internal_creator_contact, title, internal_id);
 
-      console.log("Message sent:", info.messageId)
+      sendMail(subject, "emailHtml", emailHtml, sendToEmail);
     }
 
     return NextResponse.json(result.rows[0]);

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
 
-export default function RemoveListingForm () {
+export default function RemoveListingForm() {
     const [formData, setFormData] = useState({
         type: '',
         listingId: '',
@@ -151,8 +151,8 @@ export default function RemoveListingForm () {
 
     return (
         <div className="min-h-screen bg-background">
+            <Breadcrumb items={breadcrumbItems} />
             <div className="container mx-auto px-4 py-8">
-                <Breadcrumb items={breadcrumbItems} />
                 {success ? getSuccessElement() :
                     <div className="mx-auto py-8">
                         <h1 className="text-4xl font-bold text-text mb-4">Request to Delete Listing</h1>

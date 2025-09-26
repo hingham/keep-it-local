@@ -74,12 +74,32 @@ export default function City() {
               <div className="flex flex-col lg:flex-row gap-8">
                 {/* Neighborhoods Grid */}
                 <div className="flex-1">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 place-items-stretch gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 place-items-stretch gap-6">
+                      <div className=" col-span-2 p-2 shadow-md border-b-gray-50 flex justify-center">
+                        {/* React image zoom seems more like what I would want here... */}
+                        <Image
+                        src="/seattle_neighborhood_map.png"
+                        alt="Seattle Neighborhood Map"
+                        width={500}
+                        height={400}
+                        className="w-full h-auto rounded-lg"
+                      />
+                        {/* <iframe src="https://www.google.com/maps/d/embed?mid=1tMniSyvjOYyQk2mvNP4HuJgvpQ3eFzw&ehbc=2E312F" width="500" height="750"></iframe> */}
+                    </div>
+                    
                     {Object.entries(groupedNeighborhoods).map(([macroNeighborhood, neighborhoods]) => (
                       <div key={macroNeighborhood} className="bg-surface rounded-lg p-6 shadow-md border border-gray-200 dark:border-gray-700">
-                        <h3 className="text-lg font-semibold text-text-primary mb-4">
-                          {macroNeighborhood}
-                        </h3>
+                        <Link
+                          href={`${encodeURIComponent(city)}/${encodeURIComponent(macroNeighborhood)}`}
+                          className="block hover:bg-primary/5 -m-2 p-2 rounded transition-colors group"
+                        >
+                          <h3 className="text-lg font-semibold text-text-primary mb-4 group-hover:text-primary transition-colors">
+                            {macroNeighborhood}
+                            <svg className="inline-block w-4 h-4 ml-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </h3>
+                        </Link>
                         <ul className="space-y-2">
                           {neighborhoods.map((neighborhood) => (
                             <li key={neighborhood.id} className="text-text-secondary">
@@ -100,26 +120,11 @@ export default function City() {
                 </div>
 
                 {/* Seattle Map - Goal is to have a clickable svg file here */}
-                
-                {city.toLowerCase() === 'seattle' && (
-                  <div className="lg:w-96 flex-shrink-0">
-                    <div className="bg-surface rounded-lg p-4 shadow-md border border-gray-200 dark:border-gray-700">
-                      <Image
-                        src="/seattle_neighborhood_map.png"
-                        alt="Seattle Neighborhood Map"
-                        width={500}
-                        height={400}
-                        className="w-full h-auto rounded-lg"
-                      />
-                    </div>
-                  </div>
-                )}
+
               </div>
             )}
           </div>
-
         </div>
-
       </main>
       <Footer />
     </div >
