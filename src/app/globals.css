@@ -78,7 +78,7 @@ Should do this for common styles (input tags) ect.
 }
 
 .button-basic {
-  @apply bg-link text-white py-3 px-4 rounded-md font-medium hover:bg-link-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed
+  @apply bg-link text-white py-2 px-3 rounded-md font-medium hover:bg-link-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed
 }
 
 .basic-a-link {

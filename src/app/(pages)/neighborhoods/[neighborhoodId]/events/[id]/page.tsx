@@ -48,8 +48,8 @@ function EventDetailComponent({ event, neighborhoodName, neighborhoodId }: { eve
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen dark:bg-gray-900 w-full py-8 px-4 sm:px-6 lg:px-8">
+
         <Back
           title={event.title}
           returnToHref={`/neighborhoods/${encodeURIComponent(neighborhoodId)}/events`}
@@ -58,7 +58,6 @@ function EventDetailComponent({ event, neighborhoodName, neighborhoodId }: { eve
 
         <ItemDetails item={event} />
 
-      </div>
     </div>
   );
 }

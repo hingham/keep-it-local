@@ -9,6 +9,7 @@ import { Service, Neighborhood, ServiceCategory } from '@/types/events';
 import ErrorComponent from '@/components/ErrorComponent/errorComponent';
 import CategoryFilter from '@/components/CategoryFilter/categoryFilter';
 import NewListingButton from '../../../../../components/NewListingButton/newListing';
+import Loading from '@/components/Loading/loading';
 
 export default function NeighborhoodServicesPage() {
   const params = useParams();
@@ -80,10 +81,8 @@ export default function NeighborhoodServicesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl">Loading services...</div>
-      </div>
-    );
+      <Loading message="Loading services..." />
+    )
   }
 
   if (error || !services) {
@@ -99,7 +98,7 @@ export default function NeighborhoodServicesPage() {
         { label: neighborhood.neighborhood, href: `/neighborhoods/${encodeURIComponent(neighborhoodId)}` },
         { label: 'Services' }
       ]} />
-      <div className="container mx-auto px-4 py-8 flex-1">
+      <div className="container mx-auto py-8 flex-1">
 
         {/* Header */}
         <Header
@@ -126,9 +125,7 @@ export default function NeighborhoodServicesPage() {
       </div>
 
       {/* Create New Listing Button - Fixed at bottom */}
-      <div className="sticky bottom-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4 shadow-lg">
         <NewListingButton neighborhoodId={neighborhoodId} />
-      </div>
     </div>
   );
 }

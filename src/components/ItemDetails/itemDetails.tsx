@@ -120,7 +120,7 @@ export function ItemDetails({ item }: { item: Service | Event }) {
     : null;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 bg-gray-100 dark:bg-gray-800 p-6 rounded-lg shadow-md">
       {/* Image */}
       <div className="relative aspect-square rounded-lg overflow-hidden shadow-lg">
         <Image

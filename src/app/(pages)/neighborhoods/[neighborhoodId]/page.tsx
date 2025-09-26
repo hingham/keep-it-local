@@ -78,87 +78,83 @@ export default function NeighborhoodPage() {
   }
 
   return (
-    <div className="min-h-screen dark:bg-gray-900 flex flex-col">
-      <div className="flex-1">
+    <>
+      <div className="min-h-screen container mx-auto">
         <Breadcrumb items={[
           { label: neighborhood.city.toUpperCase(), href: `/${encodeURIComponent(neighborhood.city.toLowerCase())}` },
           { label: neighborhood.neighborhood }
         ]} />
-        <div className="container mx-auto px-4 py-8">
-          {/* <QRCodeButton /> */}
+        {/* <QRCodeButton /> */}
 
-          {/* Header */}
-          <Header
-            title={neighborhood.neighborhood}
-            subtitle={`${neighborhood.city}, ${neighborhood.state} • ${neighborhood.macro_neighborhood}`}
-          />
+        {/* Header */}
+        <Header
+          title={neighborhood.neighborhood}
+          subtitle={`${neighborhood.city}, ${neighborhood.state} • ${neighborhood.macro_neighborhood}`}
+        />
 
-          {/* Content Sections */}
-          <div className="space-y-12 pb-20">
-            {/* Events Section */}
-            <div>
-              <div className="flex items-center justify-between mb-6">
-                <Link
-                  href={`/neighborhoods/${encodeURIComponent(neighborhoodId)}/events`}
-                  className="group link"
-                >
-                  <h2 className="text-xl md:text-2xl font-bold transition-colors duration-200 cursor-pointer">
-                    Upcoming Events
-                    <svg className="inline-block w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </h2>
-                </Link>
-              </div>
-              <CardGrid
-                maxRows={1}
-                items={events.slice(0, 4)}
-                getHref={(event) => `/neighborhoods/${encodeURIComponent(neighborhoodId)}/events/${event.id}`}
-                getHeading={(event) => event.title || ''}
-                getDetails={(event) => {
-                  if ('location' in event && typeof event.location === 'string') {
-                    return event.location;
-                  }
-                  return '';
-                }}
-                emptyMessage={
-                  `No events found in ${neighborhood.neighborhood}`
+        {/* Content Sections */}
+        <div className="space-y-12 pb-20">
+          {/* Events Section */}
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <Link
+                href={`/neighborhoods/${encodeURIComponent(neighborhoodId)}/events`}
+                className="group link"
+              >
+                <h2 className="text-xl md:text-2xl font-bold transition-colors duration-200 cursor-pointer">
+                  Upcoming Events
+                  <svg className="inline-block w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </h2>
+              </Link>
+            </div>
+            <CardGrid
+              maxRows={1}
+              items={events.slice(0, 4)}
+              getHref={(event) => `/neighborhoods/${encodeURIComponent(neighborhoodId)}/events/${event.id}`}
+              getHeading={(event) => event.title || ''}
+              getDetails={(event) => {
+                if ('location' in event && typeof event.location === 'string') {
+                  return event.location;
                 }
-              />
-            </div>
+                return '';
+              }}
+              emptyMessage={
+                `No events found in ${neighborhood.neighborhood}`
+              }
+            />
+          </div>
 
-            {/* Services Section */}
-            <div>
-              <div className="flex items-center justify-between mb-6">
-                <Link
-                  href={`/neighborhoods/${encodeURIComponent(neighborhoodId)}/services`}
-                  className="group link"
-                >
-                  <h2 className="text-xl md:text-2xl font-bold transition-colors duration-200">
-                    Local Services
-                    <svg className="inline-block w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </h2>
-                </Link>
-              </div>
-              <CardGrid
-                maxRows={1}
-                items={services.slice(0, 4)}
-                getHref={(service) => `/neighborhoods/${encodeURIComponent(neighborhoodId)}/services/${service.id}`}
-                getHeading={(service) => (service as Service).title || ''}
-                getDetails={(service) => (service as Service).owner || ''}
-                emptyMessage={`No services found in ${neighborhood.neighborhood}`}
-              />
+          {/* Services Section */}
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <Link
+                href={`/neighborhoods/${encodeURIComponent(neighborhoodId)}/services`}
+                className="group link"
+              >
+                <h2 className="text-xl md:text-2xl font-bold transition-colors duration-200">
+                  Local Services
+                  <svg className="inline-block w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </h2>
+              </Link>
             </div>
+            <CardGrid
+              maxRows={1}
+              items={services.slice(0, 4)}
+              getHref={(service) => `/neighborhoods/${encodeURIComponent(neighborhoodId)}/services/${service.id}`}
+              getHeading={(service) => (service as Service).title || ''}
+              getDetails={(service) => (service as Service).owner || ''}
+              emptyMessage={`No services found in ${neighborhood.neighborhood}`}
+            />
           </div>
         </div>
       </div>
 
       {/* Create New Listing Button - Fixed at bottom */}
-      <div className="sticky bottom-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4 shadow-lg">
-        <NewListingButton neighborhoodId={neighborhoodId} />
-      </div>
-    </div>
+      <NewListingButton neighborhoodId={neighborhoodId} />
+    </>
   );
 }

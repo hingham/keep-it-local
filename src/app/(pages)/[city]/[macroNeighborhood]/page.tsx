@@ -101,13 +101,12 @@ export default function MacroNeighborhoodPage() {
   const neighborhoodNames = neighborhoods.map(n => n.neighborhood).join(', ');
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-text-primary">
-      <Breadcrumb items={[
-        { label: firstNeighborhood.city.toUpperCase(), href: `/${encodeURIComponent(firstNeighborhood.city.toLowerCase())}` },
-        { label: macroNeighborhood }
-      ]} />
-      <main className="flex-1 flex flex-col items-center sm:items-start p-8 gap-16">
+    <div>
         <div className="w-full mx-auto">
+          <Breadcrumb items={[
+            { label: firstNeighborhood.city.toUpperCase(), href: `/${encodeURIComponent(firstNeighborhood.city.toLowerCase())}` },
+            { label: macroNeighborhood }
+          ]} />
           <div className="flex justify-between items-start mb-6">
             <div>
               <p className="text-text-secondary text-sm md:text-base">
@@ -193,8 +192,7 @@ export default function MacroNeighborhoodPage() {
           </div>
 
         </div>
-      </main>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

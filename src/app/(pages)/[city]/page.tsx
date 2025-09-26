@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Footer from "@/components/Footer";
 import { useParams } from "next/navigation";
 import SiteHeader from "@/components/Header/siteHeader";
+import Loading from "@/components/Loading/loading";
 
 interface Neighborhood {
   id: number;
@@ -51,82 +52,76 @@ export default function City() {
     acc[macroNeighborhood].push(neighborhood);
     return acc;
   }, {} as Record<string, Neighborhood[]>);
+
   return (
-    <div className="min-h-screen flex flex-col bg-background text-text-primary">
-      <main className="flex-1 flex flex-col items-center sm:items-start p-8 pb-20 gap-16 sm:p-20">
-        <div className="w-full max-w-4xl mx-auto">
+    <div className="p-8 pb-20 w-full">
 
-          <SiteHeader>
-            <h2 className="text-2xl sm:text-4xl font-semibold text-text-primary mb-4">
-              {city.charAt(0).toUpperCase() + city.slice(1)}
-            </h2>
-          </SiteHeader>
+        <SiteHeader>
+          <h2 className="text-2xl sm:text-4xl font-semibold text-text-primary mb-4">
+            {city.charAt(0).toUpperCase() + city.slice(1)}
+          </h2>
+        </SiteHeader>
 
-          {/* Site Body */}
+        {/* Site Body */}
 
-          {/* Neighborhoods Section */}
-          <div className="w-full">
-            {loading ? (
-              <div className="text-center py-8">
-                <div className="text-text-secondary">Loading neighborhoods...</div>
-              </div>
-            ) : (
-              <div className="flex flex-col lg:flex-row gap-8">
-                {/* Neighborhoods Grid */}
-                <div className="flex-1">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 place-items-stretch gap-6">
-                      <div className=" col-span-2 p-2 shadow-md border-b-gray-50 flex justify-center">
-                        {/* React image zoom seems more like what I would want here... */}
-                        <Image
-                        src="/seattle_neighborhood_map.png"
-                        alt="Seattle Neighborhood Map"
-                        width={500}
-                        height={400}
-                        className="w-full h-auto rounded-lg"
-                      />
-                        {/* <iframe src="https://www.google.com/maps/d/embed?mid=1tMniSyvjOYyQk2mvNP4HuJgvpQ3eFzw&ehbc=2E312F" width="500" height="750"></iframe> */}
-                    </div>
-                    
-                    {Object.entries(groupedNeighborhoods).map(([macroNeighborhood, neighborhoods]) => (
-                      <div key={macroNeighborhood} className="bg-surface rounded-lg p-6 shadow-md border border-gray-200 dark:border-gray-700">
-                        <Link
-                          href={`${encodeURIComponent(city)}/${encodeURIComponent(macroNeighborhood)}`}
-                          className="block hover:bg-primary/5 -m-2 p-2 rounded transition-colors group"
-                        >
-                          <h3 className="text-lg font-semibold text-text-primary mb-4 group-hover:text-primary transition-colors">
-                            {macroNeighborhood}
-                            <svg className="inline-block w-4 h-4 ml-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                          </h3>
-                        </Link>
-                        <ul className="space-y-2">
-                          {neighborhoods.map((neighborhood) => (
-                            <li key={neighborhood.id} className="text-text-secondary">
-                              <Link
-                                href={`/neighborhoods/${encodeURIComponent(neighborhood.id)}`}
-                                className="block hover:bg-primary/10 md:p-2 rounded transition-colors"
-                              >
-                                <div className="font-medium text-primary hover:text-primary-dark hover:underline">
-                                  {neighborhood.neighborhood}
-                                </div>
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
+        {/* Neighborhoods Section */}
+        <div className="w-full">
+          {loading ? (
+            <Loading message="Loading neighborhoods..." / >
+          ) : (
+            <div className="flex flex-col lg:flex-row gap-8">
+              {/* Neighborhoods Grid */}
+              <div className="flex-1">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 place-items-stretch gap-6">
+                  <div className="sm:col-span-2 p-2 shadow-md border-b-gray-50 flex justify-center">
+                    {/* React image zoom seems more like what I would want here... */}
+                    <Image
+                      src="/seattle_neighborhood_map.png"
+                      alt="Seattle Neighborhood Map"
+                      width={500}
+                      height={400}
+                      className="w-full h-auto rounded-lg"
+                    />
+                    {/* <iframe src="https://www.google.com/maps/d/embed?mid=1tMniSyvjOYyQk2mvNP4HuJgvpQ3eFzw&ehbc=2E312F" width="500" height="750"></iframe> */}
                   </div>
+
+                  {Object.entries(groupedNeighborhoods).map(([macroNeighborhood, neighborhoods]) => (
+                    <div key={macroNeighborhood} className="bg-surface rounded-lg p-6 shadow-md border border-gray-200 dark:border-gray-700">
+                      <Link
+                        href={`${encodeURIComponent(city)}/${encodeURIComponent(macroNeighborhood)}`}
+                        className="block hover:bg-primary/5 -m-2 p-2 rounded transition-colors group"
+                      >
+                        <h3 className="text-lg font-semibold text-text-primary mb-4 group-hover:text-primary transition-colors">
+                          {macroNeighborhood}
+                          <svg className="inline-block w-4 h-4 ml-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </h3>
+                      </Link>
+                      <ul className="space-y-2">
+                        {neighborhoods.map((neighborhood) => (
+                          <li key={neighborhood.id} className="text-text-secondary">
+                            <Link
+                              href={`/neighborhoods/${encodeURIComponent(neighborhood.id)}`}
+                              className="block hover:bg-primary/10 md:p-2 rounded transition-colors"
+                            >
+                              <div className="font-medium text-primary hover:text-primary-dark hover:underline">
+                                {neighborhood.neighborhood}
+                              </div>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
                 </div>
-
-                {/* Seattle Map - Goal is to have a clickable svg file here */}
-
               </div>
-            )}
-          </div>
+
+              {/* Seattle Map - Goal is to have a clickable svg file here */}
+
+            </div>
+          )}
         </div>
-      </main>
-      <Footer />
-    </div >
+    </div>
   );
 }
