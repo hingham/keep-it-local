@@ -7,7 +7,8 @@ import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
 import { Neighborhood, Event, Service } from '@/types/events';
 import CardGrid from '@/components/CardGrid/cardGrid';
 import ErrorComponent from '@/components/ErrorComponent/errorComponent';
-import NewListingButton from './events/newListing';
+import NewListingButton from '../../../../components/NewListingButton/newListing';
+import Header from '@/components/Header/header';
 
 export default function NeighborhoodPage() {
   const params = useParams();
@@ -77,22 +78,20 @@ export default function NeighborhoodPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
+    <div className="min-h-screen dark:bg-gray-900 flex flex-col">
       <div className="flex-1">
+        <Breadcrumb items={[
+          { label: neighborhood.city.toUpperCase(), href: `/${encodeURIComponent(neighborhood.city.toLowerCase())}` },
+          { label: neighborhood.neighborhood }
+        ]} />
         <div className="container mx-auto px-4 py-8">
-          <div className="flex justify-between">
-            <Breadcrumb items={[
-              { label: neighborhood.city.toUpperCase(), href: `/${encodeURIComponent(neighborhood.city.toLowerCase())}` },
-              { label: neighborhood.neighborhood }
-            ]} />
-            {/* <QRCodeButton /> */}
-          </div>
+          {/* <QRCodeButton /> */}
 
           {/* Header */}
-          {/* <Header
+          <Header
             title={neighborhood.neighborhood}
             subtitle={`${neighborhood.city}, ${neighborhood.state} • ${neighborhood.macro_neighborhood}`}
-          /> */}
+          />
 
           {/* Content Sections */}
           <div className="space-y-12 pb-20">

@@ -8,7 +8,7 @@ import CardGrid from '@/components/CardGrid/cardGrid';
 import { Service, Neighborhood, ServiceCategory } from '@/types/events';
 import ErrorComponent from '@/components/ErrorComponent/errorComponent';
 import CategoryFilter from '@/components/CategoryFilter/categoryFilter';
-import NewListingButton from '../events/newListing';
+import NewListingButton from '../../../../../components/NewListingButton/newListing';
 
 export default function NeighborhoodServicesPage() {
   const params = useParams();
@@ -33,12 +33,19 @@ export default function NeighborhoodServicesPage() {
 
         const servicesData = await servicesRes.json();
 
+        // If there are no events this ensures neighborhood data is still fetched
+        const neighborhoodRes = await fetch(`/api/neighborhoods/${neighborhoodId}`);
+        if (!neighborhoodRes.ok) {
+          throw new Error('Failed to fetch neighborhood');
+        }
+        const neighborhoodData: Neighborhood = await neighborhoodRes.json();
+
         setNeighborhood({
-          id: servicesData[0]?.neighborhood_id || 0,
-          neighborhood: servicesData[0]?.neighborhood || '',
-          city: servicesData[0]?.city || '',
-          state: servicesData[0]?.state || '',
-          macro_neighborhood: servicesData[0]?.macro_neighborhood || ''
+          id: neighborhoodData.id,
+          neighborhood: neighborhoodData.neighborhood,
+          city: neighborhoodData.city,
+          state: neighborhoodData.state,
+          macro_neighborhood: neighborhoodData.macro_neighborhood
         });
         setServices(servicesData);
       } catch (err) {
@@ -86,17 +93,17 @@ export default function NeighborhoodServicesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
+    <div className="min-h-screen dark:bg-gray-900 flex flex-col">
+      <Breadcrumb items={[
+        { label: neighborhood.city.toUpperCase(), href: `/${neighborhood.city}` },
+        { label: neighborhood.neighborhood, href: `/neighborhoods/${encodeURIComponent(neighborhoodId)}` },
+        { label: 'Services' }
+      ]} />
       <div className="container mx-auto px-4 py-8 flex-1">
-        <Breadcrumb items={[
-          { label: neighborhood.city.toUpperCase(), href: `/${neighborhood.city}` },
-          { label: neighborhood.neighborhood, href: `/neighborhoods/${encodeURIComponent(neighborhoodId)}` },
-          { label: 'Services' }
-        ]} />
 
         {/* Header */}
         <Header
-          title={'Free or low cost community events.'}
+          title={'Your neighbors have skills. These local services are available to help.'}
           subtitle={`${neighborhood.city}, ${neighborhood.state} • ${neighborhood.macro_neighborhood} • ${neighborhood.neighborhood}`}
         />
 

@@ -7,7 +7,8 @@ import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
 import CardGrid from '@/components/CardGrid/cardGrid';
 import ErrorComponent from '@/components/ErrorComponent/errorComponent';
 import CategoryFilter from '@/components/CategoryFilter/categoryFilter';
-import NewListingButton from './newListing';
+import NewListingButton from '../../../../../components/NewListingButton/newListing';
+import Header from '@/components/Header/header';
 
 export default function NeighborhoodEventsPage() {
   const params = useParams();
@@ -29,15 +30,22 @@ export default function NeighborhoodEventsPage() {
         if (!eventsRes.ok) {
           throw new Error('Failed to fetch events');
         }
-
         const eventsData = await eventsRes.json();
 
+
+        // If there are no events this ensures neighborhood data is still fetched
+        const neighborhoodRes = await fetch(`/api/neighborhoods/${neighborhoodId}`);
+        if (!neighborhoodRes.ok) {
+          throw new Error('Failed to fetch neighborhood');
+        }
+        const neighborhoodData: Neighborhood = await neighborhoodRes.json();
+
         setNeighborhood({
-          id: eventsData[0]?.neighborhood_id || 0,
-          neighborhood: eventsData[0]?.neighborhood || '',
-          city: eventsData[0]?.city || '',
-          state: eventsData[0]?.state || '',
-          macro_neighborhood: eventsData[0]?.macro_neighborhood || ''
+          id: neighborhoodData.id,
+          neighborhood: neighborhoodData.neighborhood,
+          city: neighborhoodData.city,
+          state: neighborhoodData.state,
+          macro_neighborhood: neighborhoodData.macro_neighborhood
         });
         setEvents(eventsData);
         setFilteredEvents(eventsData); // Initialize filtered events with all events
@@ -88,13 +96,18 @@ export default function NeighborhoodEventsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
+    <div className="min-h-screen dark:bg-gray-900 flex flex-col">
+      <Breadcrumb items={[
+        { label: neighborhood.city.toUpperCase(), href: `/${neighborhood.city}` },
+        { label: neighborhood.neighborhood, href: `/neighborhoods/${encodeURIComponent(neighborhoodId)}` },
+        { label: 'Events' }
+      ]} />
       <div className="container mx-auto px-4 py-8 flex-1">
-        <Breadcrumb items={[
-          { label: neighborhood.city.toUpperCase(), href: `/${neighborhood.city}` },
-          { label: neighborhood.neighborhood, href: `/neighborhoods/${encodeURIComponent(neighborhoodId)}` },
-          { label: 'Events' }
-        ]} />
+        {/* Header */}
+        <Header
+          title={'Local events in your neighborhood.'}
+          subtitle={`${neighborhood.city}, ${neighborhood.state} • ${neighborhood.macro_neighborhood} • ${neighborhood.neighborhood}`}
+        />
 
         {/* Header */}
         {/* <Header
@@ -129,7 +142,7 @@ export default function NeighborhoodEventsPage() {
       </div>
       {/* Create New Listing Button - Fixed at bottom */}
       <div className="sticky bottom-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4 shadow-lg">
-          <NewListingButton neighborhoodId={neighborhoodId} />
+        <NewListingButton neighborhoodId={neighborhoodId} />
       </div>
     </div>
   );

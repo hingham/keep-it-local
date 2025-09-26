@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
 import { pool } from '@/lib/db';
 import { put } from '@/lib/storage';
-import { transporter, isDevelopmentMode } from '@/lib/api-helpers';
-import nodemailer from "nodemailer";
+import { isDevelopmentMode, sendMail } from '@/lib/api-helpers';
+import { getEmailHtmlForItemCreation } from "@/lib/emailHtml"
 import { v4 as uuidv4 } from 'uuid';
+import { parsePostgreSQLArray } from '@/lib/utils';
 
 export async function GET() {
   try {
@@ -25,6 +26,12 @@ export async function GET() {
 
     client.release();
 
+    // Parse PostgreSQL array for categories field
+    result.rows.forEach((row) => {
+      if (row.categories) {
+        row.categories = parsePostgreSQLArray(row.categories);
+      }
+    });
     return NextResponse.json(result.rows);
   } catch (error) {
     console.error('Error fetching services:', error);
@@ -106,22 +113,18 @@ export async function POST(request: Request) {
       [title, owner, description, website, contact_number, contact_email, service_category, neighborhood_id, serviceData.imageUrl, verified || false, delete_after, internal_id, internal_creator_contact]
     );
     client.release();
-
+    console.log({result})
     // TODO: Add nodemailer to send email here at this step
     if (internal_creator_contact) {
-      const emailHtml =
-        `<h2>You've successful added your service: ${title}.</h2> <p>Included in this email is the internal id associated with this service. You can use this id if you would like to remove your service post before the expiration date: ${delete_after} by filling out the request to delete form on the site</p> <p><b>${"Internal Id"}</b> ${internal_id}</p>`;
+      // TODO: Update this to use helper functions - see service route
+      if (internal_creator_contact) {
+        const subject = "Service Submitted to The Local Board";
+        const sendToEmail = isDevelopmentMode() ? "receiver@example.com" : internal_creator_contact
+        const emailHtml = getEmailHtmlForItemCreation("service", internal_creator_contact, title, internal_id);
 
-      const info = await transporter.sendMail({
-        from: '"The Local Board" <no-reply@example.com>',
-        to: isDevelopmentMode() ? "receiver@example.com" : internal_creator_contact,
-        subject: "Testing with Ethereal",
-        html: emailHtml, // HTML body
-      });
+        await sendMail(subject, "emailHtml", emailHtml, sendToEmail);
+      }
 
-      console.log("Message sent:", info.messageId, internal_creator_contact, JSON.stringify(info))
-      console.log(" Email sent:", info.messageId);
-      console.log(" Preview URL:", nodemailer.getTestMessageUrl(info));
     }
 
 

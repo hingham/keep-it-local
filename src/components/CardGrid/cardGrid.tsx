@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Service, Event} from '@/types/events';
+import { Service, Event } from '@/types/events';
 
 interface CardGridProps {
   items: Service[] | Event[];
@@ -13,13 +13,13 @@ interface CardGridProps {
 
 function CardGrid({ items, getHref, getHeading, getDetails, emptyMessage, maxRows }: CardGridProps) {
   return (
-    <div className={ maxRows ? 
+    <div className={maxRows ?
       `grid grid-rows-[1fr_${maxRows - 1}] grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-6 overflow-hidden` :
       "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-6 overflow-hidden"}>
       {items.length > 0 ? (
         items.map((item) => (
-          <Link 
-            key={item.id} 
+          <Link
+            key={item.id}
             href={getHref(item)}
             className="group cursor-pointer"
           >
@@ -31,7 +31,7 @@ function CardGrid({ items, getHref, getHeading, getDetails, emptyMessage, maxRow
                 className="object-cover opacity-80 md:opacity-100 md:group-hover:opacity-80 transition-opacity duration-300"
                 sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
               />
-              
+
               {/* Overlay with title on hover */}
               <div className="absolute inset-0 flex justify-center items-end">
                 <div className="p-2 md:p-4 text-black bg-white opacity-85 md:opacity-0 md:group-hover:opacity-85 transition-opacity duration-300 w-full">
@@ -43,7 +43,7 @@ function CardGrid({ items, getHref, getHeading, getDetails, emptyMessage, maxRow
           </Link>
         ))
       ) : (
-        <div className="col-span-full text-center py-12">
+        <div className="col-span-full text-center py-8 bg-surface rounded-lg border border-gray-200 dark:border-gray-700">
           <div className="text-gray-500 dark:text-gray-400">
             {emptyMessage}
           </div>

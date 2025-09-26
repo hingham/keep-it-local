@@ -4,6 +4,7 @@ import { useState, useEffect, ReactElement } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
 import { CreateEvent, CreateService, EventCategory, Neighborhood, ServiceCategory } from '@/types/events';
+import Link from 'next/link';
 
 const ItemDefinition = ({ definition }: { definition: { title: string; bullets: { bullet: string; description: string }[] } }) => {
   return (
@@ -232,19 +233,17 @@ export default function CreateListingPage() {
         formData.append('image', selectedImage);
       }
 
+      // content type is inferred. Setting explicitly can cause issues with boundary
       const response = await fetch('/api/events', {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
         method: 'POST',
         body: formData,
       });
 
       if (response.ok) {
         setSuccess(true);
-        setTimeout(() => {
-          router.push('/');
-        }, 2000);
+        // setTimeout(() => {
+        //   router.push('/');
+        // }, 2000);
       } else {
         throw new Error('Failed to create event');
       }
@@ -277,6 +276,7 @@ export default function CreateListingPage() {
         formData.append('image', selectedImage);
       }
 
+      // content type is inferred. Setting explicitly can cause issues with boundary
       const response = await fetch('/api/services', {
         method: 'POST',
         body: formData,
@@ -284,10 +284,10 @@ export default function CreateListingPage() {
 
       if (response.ok) {
         setSuccess(true);
-        setTimeout(() => {
-          // Return user to neighborhood page after successful item creation
-          router.push(`/neighborhoods/${neighborhoodId}`);
-        }, 2000);
+        // setTimeout(() => {
+        //   // Return user to neighborhood page after successful item creation
+        //   router.push(`/neighborhoods/${neighborhoodId}`);
+        // }, 2000);
       } else {
         throw new Error('Failed to create service');
       }
@@ -306,8 +306,8 @@ export default function CreateListingPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
+      <div className="min-h-screen bg-background flex items-center justify-center p-8">
+        <div className="text-center max-w-2xl">
           <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -319,7 +319,17 @@ export default function CreateListingPage() {
           <p className="text-text-secondary mb-4">
             Your listing has been submitted for review and will be published once approved.
           </p>
-          <p className="text-text-secondary">Redirecting to home page...</p>
+          <p className="text-text-secondary mb-4">
+            A confirmation email has been sent to the internal contact email you provided:
+            <br />
+            <strong>{serviceData.internal_creator_contact || eventData.internal_creator_contact}</strong>
+          </p>
+          <p className="text-text-secondary mb-4">
+            Please check your inbox (and spam folder) for a link to your listing, as well as a unique ID to manage your listing. If you did not receive an email for what ever reason, you can still manage your listing with the email you provided on the listing.
+          </p>
+          <Link href={`/neighborhoods/${neighborhoodId}`} className="button-basic mt-4 inline-block">
+            <p className="text-text-secondary-light">Return to neighborhood page</p>
+          </Link>
         </div>
       </div>
     );
@@ -493,6 +503,7 @@ export default function CreateListingPage() {
                       <input
                         type="time"
                         name="time"
+                        required={true}
                         value={eventData.time}
                         onChange={handleInputChange}
                         className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-background text-text focus:outline-none focus:ring-2 focus:ring-primary mt-2"
