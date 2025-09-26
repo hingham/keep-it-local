@@ -96,16 +96,16 @@ export default function NeighborhoodEventsPage() {
   }
 
   return (
-    <div className="min-h-screen dark:bg-gray-900 flex flex-col">
+    <div className="min-h-screen flex flex-col">
       <Breadcrumb items={[
         { label: neighborhood.city.toUpperCase(), href: `/${neighborhood.city}` },
         { label: neighborhood.neighborhood, href: `/neighborhoods/${encodeURIComponent(neighborhoodId)}` },
         { label: 'Events' }
       ]} />
-      <div className="container mx-auto px-4 py-8 flex-1">
+      <div className="container mx-auto py-8 flex-1">
         {/* Header */}
         <Header
-          title={'Local events in your neighborhood.'}
+          title={'Meet neighbors. See friends. Get involved.'}
           subtitle={`${neighborhood.city}, ${neighborhood.state} • ${neighborhood.macro_neighborhood} • ${neighborhood.neighborhood}`}
         />
 
@@ -141,9 +141,7 @@ export default function NeighborhoodEventsPage() {
         />
       </div>
       {/* Create New Listing Button - Fixed at bottom */}
-      <div className="sticky bottom-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4 shadow-lg">
-        <NewListingButton neighborhoodId={neighborhoodId} />
-      </div>
+      <NewListingButton neighborhoodId={neighborhoodId} />
     </div>
   );
 }

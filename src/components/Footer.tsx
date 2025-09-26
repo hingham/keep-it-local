@@ -5,6 +5,15 @@ export default function Footer() {
     <footer className="mt-auto">
       <div className="bg-secondary w-full text-center text-text-light py-4 flex flex-col justify-center items-center gap-2 sm:gap-0">
         <span>© 2025 The Local Board</span>
+      </div>
+    </footer>
+  );
+}
+
+function StickyFooter() {
+  return (
+    <footer className="mt-auto sticky bottom-0 z-10">
+      <div className="bg-secondary w-full text-center text-text-light py-4 flex flex-col justify-center items-center gap-2 sm:gap-0">
         <div className="flex flex-row gap-4">
 
           <Link href="/support" className="text-text-secondary-light">
@@ -20,3 +29,5 @@ export default function Footer() {
     </footer>
   );
 }
+
+export { StickyFooter }
