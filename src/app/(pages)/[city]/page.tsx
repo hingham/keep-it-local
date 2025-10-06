@@ -1,12 +1,11 @@
 'use client';
 
 import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useState } from "react";
-import Footer from "@/components/Footer";
 import { useParams } from "next/navigation";
 import SiteHeader from "@/components/Header/siteHeader";
 import Loading from "@/components/Loading/loading";
+import SeattleSVG from "@/components/City-SVG/seattle";
 
 interface Neighborhood {
   id: number;
@@ -73,15 +72,16 @@ export default function City() {
               {/* Neighborhoods Grid */}
               <div className="flex-1">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 place-items-stretch gap-6">
-                  <div className="sm:col-span-2 p-2 shadow-md border-b-gray-50 flex justify-center">
+                  <div className="sm:col-span-3 p-2 shadow-md border-b-gray-50">
                     {/* React image zoom seems more like what I would want here... */}
-                    <Image
+                    {/* <Image
                       src="/seattle_neighborhood_map.png"
                       alt="Seattle Neighborhood Map"
                       width={500}
                       height={400}
                       className="w-full h-auto rounded-lg"
-                    />
+                    /> */}
+                    <SeattleSVG />
                     {/* <iframe src="https://www.google.com/maps/d/embed?mid=1tMniSyvjOYyQk2mvNP4HuJgvpQ3eFzw&ehbc=2E312F" width="500" height="750"></iframe> */}
                   </div>
 
@@ -98,7 +98,8 @@ export default function City() {
                           </svg>
                         </h3>
                       </Link>
-                      <ul className="space-y-2">
+                      {/* Looks very busy with this so commenting out for now */}
+                      {/* <ul className="space-y-2">
                         {neighborhoods.map((neighborhood) => (
                           <li key={neighborhood.id} className="text-text-secondary">
                             <Link
@@ -111,7 +112,7 @@ export default function City() {
                             </Link>
                           </li>
                         ))}
-                      </ul>
+                      </ul> */}
                     </div>
                   ))}
                 </div>
