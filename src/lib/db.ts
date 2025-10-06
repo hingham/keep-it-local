@@ -156,7 +156,8 @@ export async function initializeDatabase() {
       WHERE verified = true;
     `);
 
-    await addSampleData(client);
+    // Comment out - add sample data with runbook
+    // await addSampleData(client);
 
     console.log('Database initialized successfully');
     return { success: true };

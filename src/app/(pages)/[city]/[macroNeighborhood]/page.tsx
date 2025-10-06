@@ -6,13 +6,10 @@ import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
 import { Neighborhood, Event, Service } from '@/types/events';
 import CardGrid from '@/components/CardGrid/cardGrid';
 import ErrorComponent from '@/components/ErrorComponent/errorComponent';
-import Footer from '@/components/Footer';
-import SiteHeader from '@/components/Header/siteHeader';
-import QRCodeButton from '@/components/QRCodeButton/QRCodeButton';
 
 export default function MacroNeighborhoodPage() {
   const params = useParams();
-  const macroNeighborhood = decodeURIComponent(params.macroNeighborhood as string)
+  const macroNeighborhood = decodeURIComponent(params.macroNeighborhood as string).replace(/_/g, ' ');
   const city = decodeURIComponent(params.city as string)
 
   // const city = searchParams.get('city') || '';
@@ -27,12 +24,14 @@ export default function MacroNeighborhoodPage() {
     const fetchData = async () => {
       try {
         // Fetch all neighborhoods in this macro-neighborhood
+        // TODO this should at least be filtered by city in the future
         const neighborhoodsRes = await fetch('/api/neighborhoods');
         if (!neighborhoodsRes.ok) {
           throw new Error('Failed to fetch neighborhoods');
         }
 
         const allNeighborhoods: Neighborhood[] = await neighborhoodsRes.json();
+        
         const macroNeighborhoods = allNeighborhoods.filter(
           n => n.macro_neighborhood === macroNeighborhood &&
             n.city.toLowerCase() === city.toLowerCase()
