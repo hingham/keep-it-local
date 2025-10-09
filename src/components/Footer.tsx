@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <footer className="mt-auto">
       <div className="bg-secondary w-full text-center text-text-light py-4 flex flex-col justify-center items-center gap-2 sm:gap-0">
-        <span>© 2025 The Local Board</span>
+        <Link href="/">© 2025 The Local Board</Link>
       </div>
     </footer>
   );

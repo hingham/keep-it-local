@@ -2,22 +2,20 @@ import Link from "next/link"
 
 import { ReactNode } from "react";
 
-const SiteHeader = ({children}: {children?: ReactNode}) => {
+const SiteHeader = ({ children }: { children?: ReactNode }) => {
     return (
 
-        <div className="text-center text-white mx-auto py-8 bg-secondary/90 border border-primary/20 rounded-lg md:p-8 shadow-sm w-full mb-6">
+        <div className="text-center text-text-secondary-light bg-secondary mx-auto mb-4 w-full">
 
-            <Link href="/" className="text-sm text-secondary-light hover:underline mb-4 inline-block">
-                <h1 className="text-4xl sm:text-6xl text-text-primary mb-4">
+            <Link href="/" className="text-sm hover:underline inline-block w-full py-2">
+                <h2 className="text-3xl text-text-primary font-semibold mt-2">
                     The Local Board
-                </h1>
+                </h2>
             </Link>
-            <p className="text-lg text-text-secondary-light md:mb-6">
-                Your neighborhood’s bulletin board.
-                <br />
-                Events, and services—right where you live.
-            </p>
             {children}
+            <p className="text-md md:text-sm w-full pb-2">
+                Your neighborhood’s bulletin board. Events and services—right where you live.
+            </p>
         </div>
     )
 }

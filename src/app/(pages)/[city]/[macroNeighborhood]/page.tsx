@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
 import { Neighborhood, Event, Service } from '@/types/events';
 import CardGrid from '@/components/CardGrid/cardGrid';
 import ErrorComponent from '@/components/ErrorComponent/errorComponent';
+import { parseNeighborhood } from '@/lib/utils';
 
 export default function MacroNeighborhoodPage() {
   const params = useParams();
@@ -167,7 +168,7 @@ export default function MacroNeighborhoodPage() {
               <h2 className="text-xl md:text-2xl font-bold mb-6">
                 Neighborhoods in {macroNeighborhood}
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {neighborhoods.map((neighborhood) => (
                   <a
                     key={neighborhood.id}
@@ -175,7 +176,7 @@ export default function MacroNeighborhoodPage() {
                     className="block p-4 bg-surface rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-primary/5 transition-colors group"
                   >
                     <h3 className="font-medium text-primary group-hover:text-primary-dark">
-                      {neighborhood.neighborhood}
+                      {parseNeighborhood(neighborhood.neighborhood)}
                     </h3>
                     <p className="text-sm text-text-secondary mt-1">
                       {neighborhood.city}, {neighborhood.state}
@@ -184,7 +185,7 @@ export default function MacroNeighborhoodPage() {
                 ))}
               </div>
             </div>
-            <p className="text-s text-text-light bg-secondary dark:bg-gray-800 p-2 rounded-lg border border-gray-200 dark:border-gray-700">
+            <p className="text-sm md:text-base text-text-secondary italic py-6">
               * To add an event or service, first select a local neighborhood from the list above.
             </p>
 

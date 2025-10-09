@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import SiteHeader from "@/components/Header/siteHeader";
 import { mission, researchCitation, researchStatement } from "@/lib/constants"
 interface City {
   id: number;
@@ -44,12 +43,10 @@ export default function Home() {
     return acc;
   }, {} as Record<string, City[]>);
   return (
-    <div className="flex-1 flex flex-col gap-[32px] items-center sm:items-start p-8 pb-20">
-      <SiteHeader />
-
+    <div className="flex-1 flex flex-col gap-[32px] items-center sm:items-start p-4 pb-20">
       {/* Mission Statements Section */}
       <div className="w-full max-w-4xl mx-auto text-center">
-        <div className="bg-secondary/10 border border-primary/20 rounded-lg md:p-8 shadow-sm">
+        <div className="border border-primary/20 rounded-lg md:p-8 shadow-sm">
           <div className="space-y-6 p-6">
             {/* Mission Statement */}
             <div className="md:px-6">
@@ -71,7 +68,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-
       </div>
 
       {/* Site Body */}
@@ -95,7 +91,7 @@ export default function Home() {
                       <li key={city.id} className="text-text-secondary">
                         <Link
                           href={`/${encodeURIComponent(city.city.toLowerCase())}`}
-                          className="block hover:bg-primary/10 p-2 rounded transition-colors"
+                          className="block hover:bg-primary/10 py-2 rounded transition-colors"
                         >
                           <div className="font-medium text-primary hover:text-primary-dark hover:underline">
                             {city.city}
