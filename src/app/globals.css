@@ -7,10 +7,10 @@
   /* Earth-tone color scheme for light mode */
   --color-primary: oklch(37.1% 0 0);
   --color-primary-dark: oklch(20.463% 0.00002 271.152); /* green-600 */
-  --color-secondary: oklch(38.8% 0.158 241.966);
+  --color-secondary: oklch(30% 0.158 241.966);
   --color-secondary-dark: #5e7719;
-  --color-link: oklch(58.8% 0.158 241.966);
-  --color-hover-link: oklch(50% 0.134 242.749);
+  --color-link: oklch(40% 0.158 241.966);
+  --color-hover-link: oklch(30% 0.158 241.966);
   --color-accent: #1a2705; /* green-600 */
   --color-background: #ffffff; /* white */
   --color-surface: #f9fafb; /* gray-50 */

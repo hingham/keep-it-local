@@ -57,3 +57,7 @@ export function formatTime(timeString: string): string {
     hour12: true
   });
 }
+
+export function parseNeighborhood(str: string): string {
+  return str.replace(/\//g, " / ");
+}

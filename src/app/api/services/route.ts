@@ -113,7 +113,6 @@ export async function POST(request: Request) {
       [title, owner, description, website, contact_number, contact_email, service_category, neighborhood_id, serviceData.imageUrl, verified || false, delete_after, internal_id, internal_creator_contact]
     );
     client.release();
-    console.log({result})
     // TODO: Add nodemailer to send email here at this step
     if (internal_creator_contact) {
       // TODO: Update this to use helper functions - see service route
