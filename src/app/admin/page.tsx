@@ -16,7 +16,7 @@ import { AdminEvent, AdminService } from "@/types/events";
 import Header from "@/components/Header/header";
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb";
 import Loading from "@/components/Loading/loading";
-import QRCodeButton from "@/components/QRCodeButton/QRCodeButton";
+import { imageLoader } from "@/lib/utils";
 
 export default function AdminPage() {
   const [events, setEvents] = useState<AdminEvent[]>([]);
@@ -41,6 +41,7 @@ export default function AdminPage() {
     console.log(`Fetching unverified ${type}...`);
     try {
       setLoading(true);
+      // TODO update route to check the key on the backend
       const response = await fetch(`/api/${type}?verified=false`, {
         headers: {
           'x-api-key': apiKey
@@ -196,21 +197,19 @@ export default function AdminPage() {
           <div className="flex bg-white dark:bg-gray-800 rounded-lg p-1 shadow-sm border border-gray-200 dark:border-gray-700">
             <button
               onClick={() => handleToggleContentType('events')}
-              className={`flex-1 py-3 px-4 rounded-md font-medium transition-colors ${
-                contentType === 'events'
+              className={`flex-1 py-3 px-4 rounded-md font-medium transition-colors ${contentType === 'events'
                   ? 'bg-blue-600 text-white'
                   : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
-              }`}
+                }`}
             >
               Events ({events.length})
             </button>
             <button
               onClick={() => handleToggleContentType('services')}
-              className={`flex-1 py-3 px-4 rounded-md font-medium transition-colors ${
-                contentType === 'services'
+              className={`flex-1 py-3 px-4 rounded-md font-medium transition-colors ${contentType === 'services'
                   ? 'bg-blue-600 text-white'
                   : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
-              }`}
+                }`}
             >
               Services ({services.length})
             </button>
@@ -233,6 +232,7 @@ export default function AdminPage() {
                     {event.imageurl && (
                       <div className="flex-shrink-0">
                         <Image
+                          loader={imageLoader}
                           src={event.imageurl}
                           alt={event.title}
                           width={192}
@@ -336,6 +336,7 @@ export default function AdminPage() {
                     {service.imageurl && (
                       <div className="flex-shrink-0">
                         <Image
+                          loader={imageLoader}
                           src={service.imageurl}
                           alt={service.title}
                           width={192}

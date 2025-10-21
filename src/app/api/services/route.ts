@@ -64,6 +64,7 @@ export async function POST(request: Request) {
             contentType: imageFile.type,
           });
           imageUrl = blob.url;
+          console.log({imageUrl, blob})
         } catch (uploadError) {
           console.error('Error uploading image:', uploadError);
           return NextResponse.json(

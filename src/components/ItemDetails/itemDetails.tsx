@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Service, Event } from "@/types/events";
 import { useState } from "react";
-import { formatDate, formatTime, parsePostgreSQLArray } from '@/lib/utils';
+import { formatDate, formatTime, imageLoader, parsePostgreSQLArray } from '@/lib/utils';
 
 function OwnerIcon() {
   return (
@@ -120,15 +120,16 @@ export function ItemDetails({ item }: { item: Service | Event }) {
     : null;
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 bg-gray-100 dark:bg-gray-800 p-6 rounded-lg shadow-md">
+    <div className="grid grid-cols-1 gap-8 bg-gray-100 dark:bg-gray-800 p-6 rounded-lg shadow-md">
       {/* Image */}
       <div className="relative aspect-square rounded-lg overflow-hidden shadow-lg">
         <Image
+          loader={imageLoader}
           src={item.imageurl || '/placeholder-item.jpg'}
           alt={item.title}
-          fill
           className="object-cover"
           priority
+          fill
         />
         {/* Share Button */}
         <button

@@ -1,3 +1,5 @@
+import { ImageLoader, ImageLoaderProps } from "next/image";
+
 /**
  * Parse PostgreSQL array string into JavaScript array
  * Handles arrays like: {item1,item2,item3} or {"item 1","item 2","item 3"}
@@ -60,4 +62,8 @@ export function formatTime(timeString: string): string {
 
 export function parseNeighborhood(str: string): string {
   return str.replace(/\//g, " / ");
+}
+
+export function imageLoader({src, width, quality}: ImageLoaderProps): string {
+  return `${src}?w=${width || 500}&q=${quality || 75}`;
 }

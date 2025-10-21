@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Service, Event } from '@/types/events';
+import { imageLoader } from '@/lib/utils';
 
 interface CardGridProps {
   items: Service[] | Event[];
@@ -14,8 +15,8 @@ interface CardGridProps {
 function CardGrid({ items, getHref, getHeading, getDetails, emptyMessage, maxRows }: CardGridProps) {
   return (
     <div className={maxRows ?
-      `grid grid-rows-[1fr_${maxRows - 1}] grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-6 overflow-hidden` :
-      "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-6 overflow-hidden"}>
+      `grid grid-rows-[1fr_${maxRows - 1}] grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 overflow-hidden` :
+      "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 overflow-hidden"}>
       {items.length > 0 ? (
         items.map((item) => (
           <Link
@@ -25,11 +26,12 @@ function CardGrid({ items, getHref, getHeading, getDetails, emptyMessage, maxRow
           >
             <div className="relative aspect-square overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
               <Image
+                loader={imageLoader}
                 src={item.imageurl || '/placeholder-event.jpg'}
                 alt={getHeading(item)}
+                className="object-cover opacity-80 md:opacity-100 md:group-hover:opacity-80"
                 fill
-                className="object-cover opacity-80 md:opacity-100 md:group-hover:opacity-80 transition-opacity duration-300"
-                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                quality={500}
               />
 
               {/* Overlay with title on hover */}
