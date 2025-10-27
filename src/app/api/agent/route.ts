@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { pool } from '@/lib/db';
 import { sendMail, isDevelopmentMode } from '@/lib/api-helpers';
-import { Event } from '@/types/events'
+import { AdminEvent, CreateEvent, Event } from '@/types/events'
 import OpenAI from 'openai';
+import { CreateEvalCompletionsRunDataSource } from 'openai/resources/evals.mjs';
 
 // Initialize OpenAI client
 const openai = new OpenAI({
@@ -140,7 +141,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { 
         error: 'Internal server error during moderation',
-        details: isDevelopmentMode() ? error.message : undefined
+        details: isDevelopmentMode() ? error : undefined
       },
       { status: 500 }
     );
@@ -150,7 +151,7 @@ export async function POST(request: Request) {
 /**
  * Get all unverified events from the database
  */
-async function getUnverifiedEvents(): Promise<Event[]> {
+async function getUnverifiedEvents(): Promise<AdminEvent []> {
   const client = await pool.connect();
   try {
     const result = await client.query(`
@@ -167,7 +168,7 @@ async function getUnverifiedEvents(): Promise<Event[]> {
       ORDER BY e.created_at ASC
     `);
     
-    return result.rows;
+    return result.rows as unknown as AdminEvent[];
   } finally {
     client.release();
   }
@@ -176,7 +177,7 @@ async function getUnverifiedEvents(): Promise<Event[]> {
 /**
  * Analyze event content using OpenAI
  */
-async function analyzeEventContent(event: any): Promise<ContentAnalysisResult> {
+async function analyzeEventContent(event: Event): Promise<ContentAnalysisResult> {
   try {
     const prompt = `
 You are a community event moderator. Please analyze this event submission and determine if it's appropriate for a local community board.
@@ -318,7 +319,7 @@ async function updateEventVerification(eventId: number, verified: boolean) {
 /**
  * Send verification email to event creator
  */
-async function sendVerificationEmail(event: any, result: EventModerationResult) {
+async function sendVerificationEmail(event: CreateEvent & Event, result: EventModerationResult) {
   if (!event.internal_creator_contact) {
     console.log(`No contact email for event ${event.id}, skipping email`);
     return;
@@ -348,7 +349,7 @@ async function sendVerificationEmail(event: any, result: EventModerationResult) 
 /**
  * Generate email content based on moderation result
  */
-function generateEmailContent(event: any, result: EventModerationResult): string {
+function generateEmailContent(event: CreateEvent & Event, result: EventModerationResult): string {
   if (result.overallApproved) {
     return `
     <!DOCTYPE html>
