@@ -20,6 +20,7 @@ export default function MacroNeighborhoodPage() {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showNeighborhoods, setShowNeighborhoods] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,7 +33,7 @@ export default function MacroNeighborhoodPage() {
         }
 
         const allNeighborhoods: Neighborhood[] = await neighborhoodsRes.json();
-        
+
         const macroNeighborhoods = allNeighborhoods.filter(
           n => n.macro_neighborhood === macroNeighborhood &&
             n.city.toLowerCase() === city.toLowerCase()
@@ -49,10 +50,13 @@ export default function MacroNeighborhoodPage() {
 
         // Fetch all events and services for these neighborhoods
         // TODO: This should be updated to get events from public_events database in the future
-        const [eventsRes, servicesRes] = await Promise.all([
-          fetch('/api/events?verified=true'),
-          fetch('/api/services?verified=true')
-        ]);
+        const eventsRes = await fetch(
+          '/api/public/events?city=' + encodeURIComponent(city) + '&macro_neighborhood=' + encodeURIComponent(macroNeighborhood)
+        );
+
+        const servicesRes = await fetch(
+          '/api/public/services?city=' + encodeURIComponent(city) + '&macro_neighborhood=' + encodeURIComponent(macroNeighborhood)
+        );
 
         if (!eventsRes.ok || !servicesRes.ok) {
           throw new Error('Failed to fetch events or services');
@@ -101,98 +105,86 @@ export default function MacroNeighborhoodPage() {
   const neighborhoodNames = neighborhoods.map(n => n.neighborhood).join(', ');
 
   return (
-    <div>
-        <div className="w-full mx-auto">
-          <Breadcrumb items={[
-            { label: firstNeighborhood.city.toUpperCase(), href: `/${encodeURIComponent(firstNeighborhood.city.toLowerCase())}` },
-            { label: macroNeighborhood }
-          ]} />
-          <div className="flex justify-between items-start mb-6">
-            <div>
-              <p className="text-text-secondary text-sm md:text-base">
-                {macroNeighborhood} • {firstNeighborhood.city}, {firstNeighborhood.state} • {neighborhoods.length} neighborhood{neighborhoods.length !== 1 ? 's' : ''}
-              </p>
-              <p className="text-text-secondary text-xs md:text-sm mt-1">
-                {neighborhoodNames}
-              </p>
-            </div>
+      <div className="w-full mx-auto">
+        <Breadcrumb items={[
+          { label: firstNeighborhood.city.toUpperCase(), href: `/${encodeURIComponent(firstNeighborhood.city.toLowerCase())}` },
+          { label: macroNeighborhood }
+        ]} />
+        {/* Neighborhoods List */}
+        <div>
+          <h2 className="text-xl md:text-2xl font-bold mb-6" onClick={() => setShowNeighborhoods(!showNeighborhoods)} style={{ cursor: 'pointer' }}>
+            Neighborhoods in {macroNeighborhood} {showNeighborhoods ? '▲' : '▼'}
+          </h2>
+          {showNeighborhoods ? 
+          <>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {neighborhoods.map((neighborhood) => (
+                <a
+                  key={neighborhood.id}
+                  href={`/neighborhoods/${neighborhood.id}`}
+                  className="p-3 bg-surface rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-primary/5 transition-colors group"
+                >
+                  <h2 className="font-medium text-primary text-center group-hover:text-primary-dark">
+                    {parseNeighborhood(neighborhood.neighborhood)}
+                  </h2>
+                </a>
+            ))}
+          </div>
+          <p className="text-sm md:text-base text-text-secondary italic py-6">
+            * To add an event or service, first select a local neighborhood from the list above.
+          </p>
+          </>
+          : null}
+
+        </div>
+
+
+        {/* Content Sections */}
+        <div className="space-y-12">
+          {/* Events Section */}
+          <div>
+            <h2 className="text-xl md:text-2xl font-bold mb-6">
+              Upcoming Events ({events.length})
+            </h2>
+
+            <CardGrid
+              items={events}
+              getHref={(event) => {
+                const neighborhood = neighborhoods.find(n => n.id === event.neighborhood_id);
+                return `/neighborhoods/${neighborhood?.id}/events/${event.id}`;
+              }}
+              getHeading={(event) => event.title || ''}
+              getDetails={(event) => {
+                if ('location' in event && typeof event.location === 'string') {
+                  return event.location;
+                }
+                return '';
+              }}
+              emptyMessage={
+                `No events found in ${macroNeighborhood}`
+              }
+            />
           </div>
 
-
-          {/* Content Sections */}
-          <div className="space-y-12">
-            {/* Events Section */}
-            <div>
-              <h2 className="text-xl md:text-2xl font-bold mb-6">
-                Upcoming Events ({events.length})
-              </h2>
-
-              <CardGrid
-                items={events}
-                getHref={(event) => {
-                  const neighborhood = neighborhoods.find(n => n.id === event.neighborhood_id);
-                  return `/neighborhoods/${neighborhood?.id}/events/${event.id}`;
-                }}
-                getHeading={(event) => event.title || ''}
-                getDetails={(event) => {
-                  if ('location' in event && typeof event.location === 'string') {
-                    return event.location;
-                  }
-                  return '';
-                }}
-                emptyMessage={
-                  `No events found in ${macroNeighborhood}`
-                }
-              />
-            </div>
-
-            {/* Services Section */}
-            <div>
-              <h2 className="text-xl md:text-2xl font-bold mb-6">
-                Local Services ({services.length})
-              </h2>
-              <CardGrid
-                items={services}
-                getHref={(service) => {
-                  const neighborhood = neighborhoods.find(n => n.id === service.neighborhood_id);
-                  return `/neighborhoods/${neighborhood?.id}/services/${service.id}`;
-                }}
-                getHeading={(service) => service.title || ''}
-                getDetails={(service) => (service as Service).owner || ''}
-                emptyMessage={`No services found in ${macroNeighborhood}`}
-              />
-            </div>
-
-            {/* Neighborhoods List */}
-            <div>
-              <h2 className="text-xl md:text-2xl font-bold mb-6">
-                Neighborhoods in {macroNeighborhood}
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {neighborhoods.map((neighborhood) => (
-                  <a
-                    key={neighborhood.id}
-                    href={`/neighborhoods/${neighborhood.id}`}
-                    className="block p-4 bg-surface rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-primary/5 transition-colors group"
-                  >
-                    <h3 className="font-medium text-primary group-hover:text-primary-dark">
-                      {parseNeighborhood(neighborhood.neighborhood)}
-                    </h3>
-                    <p className="text-sm text-text-secondary mt-1">
-                      {neighborhood.city}, {neighborhood.state}
-                    </p>
-                  </a>
-                ))}
-              </div>
-            </div>
-            <p className="text-sm md:text-base text-text-secondary italic py-6">
-              * To add an event or service, first select a local neighborhood from the list above.
-            </p>
-
+          {/* Services Section */}
+          <div>
+            <h2 className="text-xl md:text-2xl font-bold mb-6">
+              Local Services ({services.length})
+            </h2>
+            <CardGrid
+              items={services}
+              getHref={(service) => {
+                const neighborhood = neighborhoods.find(n => n.id === service.neighborhood_id);
+                return `/neighborhoods/${neighborhood?.id}/services/${service.id}`;
+              }}
+              getHeading={(service) => service.title || ''}
+              getDetails={(service) => (service as Service).owner || ''}
+              emptyMessage={`No services found in ${macroNeighborhood}`}
+            />
           </div>
 
         </div>
-      {/* <Footer /> */}
-    </div>
+
+      </div>
   );
 }

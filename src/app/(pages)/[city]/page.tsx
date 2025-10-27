@@ -61,6 +61,7 @@ export default function City() {
       {/* Site Body */}
 
       {/* Neighborhoods Section */}
+      
       <div className="w-full">
         {loading ? (
           <Loading message="Loading neighborhoods..." />
@@ -73,7 +74,7 @@ export default function City() {
                   <SeattleSVG />
                 </div>
 
-                {Object.entries(groupedNeighborhoods).map(([macroNeighborhood, neighborhoods]) => (
+                {Object.entries(groupedNeighborhoods).map(([macroNeighborhood]) => (
                   <div key={macroNeighborhood} className="bg-surface rounded-lg p-6 shadow-md border border-gray-200 dark:border-gray-700">
                     <Link
                       href={`${encodeURIComponent(city)}/${encodeURIComponent(macroNeighborhood)}`}
@@ -86,28 +87,11 @@ export default function City() {
                         </svg>
                       </h3>
                     </Link>
-                    {/* Looks very busy with this so commenting out for now */}
-                    {/* <ul className="space-y-2">
-                        {neighborhoods.map((neighborhood) => (
-                          <li key={neighborhood.id} className="text-text-secondary">
-                            <Link
-                              href={`/neighborhoods/${encodeURIComponent(neighborhood.id)}`}
-                              className="block hover:bg-primary/10 md:p-2 rounded transition-colors"
-                            >
-                              <div className="font-medium text-primary hover:text-primary-dark hover:underline">
-                                {neighborhood.neighborhood}
-                              </div>
-                            </Link>
-                          </li>
-                        ))}
-                      </ul> */}
                   </div>
                 ))}
+
               </div>
             </div>
-
-            {/* Seattle Map - Goal is to have a clickable svg file here */}
-
           </div>
         )}
       </div>

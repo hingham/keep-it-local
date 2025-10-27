@@ -2,8 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  console.log("hit")
-  // Skip auth for public routes
+   // Skip auth for public routes
   const publicRoutes = ['/api/health', '/api/setup'];
   if (publicRoutes.some(route => request.nextUrl.pathname.startsWith(route))) {
     console.log("Skipping auth for public route:", request.nextUrl.pathname);

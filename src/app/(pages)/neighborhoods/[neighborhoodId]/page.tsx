@@ -82,6 +82,7 @@ export default function NeighborhoodPage() {
       <div className="min-h-screen container mx-auto">
         <Breadcrumb items={[
           { label: neighborhood.city.toUpperCase(), href: `/${encodeURIComponent(neighborhood.city.toLowerCase())}` },
+          { label: neighborhood.macro_neighborhood, href: `/${encodeURIComponent(neighborhood.city.toLowerCase())}/${encodeURIComponent(neighborhood.macro_neighborhood)}` },
           { label: neighborhood.neighborhood }
         ]} />
         {/* <QRCodeButton /> */}

@@ -175,15 +175,13 @@ export async function POST(request: Request) {
       ]
     );
     client.release();
-    console.log("results:", result.rows[0]);
 
-    // TODO: Update this to use helper functions - see service route
     if (internal_creator_contact) {
-      const subject = "Event Submitted The Local Board";
+      const subject = "Event Submitted - The Local Board";
       const sendToEmail = isDevelopmentMode() ? "receiver@example.com" : internal_creator_contact
       const emailHtml = getEmailHtmlForItemCreation("event", internal_creator_contact, title, internal_id);
 
-      sendMail(subject, "emailHtml", emailHtml, sendToEmail);
+      await sendMail(subject, "emailHtml", emailHtml, sendToEmail);
     }
 
     return NextResponse.json(result.rows[0]);
