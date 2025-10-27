@@ -23,6 +23,8 @@ A Next.js project built with TypeScript, React, and Vercel Postgres database. Th
    Fill in your Vercel Postgres database credentials in `.env.local`
 
 3. **Set up your database schema:**
+   - Use docker postgres db for local development
+
    ```bash
    # Option 1: Use the API endpoint (recommended)
    curl -X POST http://localhost:3001/api/setup
@@ -122,24 +124,15 @@ You should see a successful connection response.
 The database includes these tables:
 - **events**: Community events with categories (family, music, festival), dates, and locations
 - **services**: Local services offered by community members
+- **neighborhood**: Neighborhood with macro neighborhood and city
 
 Sample API calls:
 ```bash
 # Get all events
 curl http://localhost:3001/api/events
 
-# Create a new event
-curl -X POST http://localhost:3001/api/events \
-  -H "Content-Type: application/json" \
-  -d '{"date": "2025-09-15", "title": "Community BBQ", "time": "17:00", "location": "City Park", "categories": ["family"]}'
-
 # Get all services
 curl http://localhost:3001/api/services
-
-# Create a new service
-curl -X POST http://localhost:3001/api/services \
-  -H "Content-Type: application/json" \
-  -d '{"title": "Lawn Care", "owner": "John Doe", "description": "Professional lawn mowing and landscaping"}'
 ```
 
 ## Development
@@ -175,18 +168,14 @@ Check out the [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 
 ## Feature to Build out
-[] Add image upload for users. Upload image to cloudinary? Offer users option to upload two images.
-[] Update reoccurring on form to allow users to enter in multiple dates
-[] Add way for user to see macro-neighborhood events as well. Add option for users to publish to the macro-neighborhood page somehow when they upload their event.
-[] Add way to select macro neighborhood then the neighborhood under that when adding document
+[] Handle recurring events by updating the date on the event for the next event date 
 
+### Testing the AI agent to verify unverified events and services
+curl -v -X POST http://localhost:3001/api/agent \
+  -H "Authorization: Bearer [cron secret]" \
+  -H "Content-Type: application/json"
 
-Almost ready to deploy:
-- need tofor make sure vercel datastore and image store will work in prod
-- update form to accept filter by macro neighborhood
-- update the display for singular event / service
-- filter for events that are verified
-- 
-The app is just lacking DRY standards. 
-Need to focus on creating function to fetch neighborhood since that is repeated. Or just update the API to not return an array...
-And fix all the errors from replacing "name" with "id"
+Agent interaction with events:
+
+For test event with limited detail: "The event lacks sufficient detail and clarity to determine its legitimacy as a community event. The title and description are generic and do not provide meaningful information about the event's purpose, organization, or benefits to the community."
+

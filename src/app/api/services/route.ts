@@ -6,10 +6,16 @@ import { getEmailHtmlForItemCreation } from "@/lib/emailHtml"
 import { v4 as uuidv4 } from 'uuid';
 import { parsePostgreSQLArray } from '@/lib/utils';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    // Parse query string parameters
+    const { searchParams } = new URL(request.url);
+    const verifiedFilter = searchParams.get('verified');
+
     const client = await pool.connect();
-    const query = `
+
+    // Build query with optional verified filter
+    let query = `
       SELECT 
         s.*,
         n.neighborhood,
@@ -19,10 +25,20 @@ export async function GET() {
       FROM services s
       JOIN neighborhoods n ON s.neighborhood_id = n.id
       JOIN cities c ON n.city_id = c.id
-      WHERE s.verified = true
     `;
 
-    const result = await client.query(query);
+    const queryParams: (boolean)[] = [];
+
+    // Add verified filter
+    if (verifiedFilter !== null) {
+      const isVerified = verifiedFilter === 'true';
+      query += ` WHERE s.verified = $1`;
+      queryParams.push(isVerified);
+    }
+
+    query += ` ORDER BY s.created_at DESC`;
+
+    const result = await client.query(query, queryParams.length > 0 ? queryParams : undefined);
 
     client.release();
 
@@ -64,7 +80,7 @@ export async function POST(request: Request) {
             contentType: imageFile.type,
           });
           imageUrl = blob.url;
-          console.log({imageUrl, blob})
+          console.log({ imageUrl, blob })
         } catch (uploadError) {
           console.error('Error uploading image:', uploadError);
           return NextResponse.json(
@@ -114,19 +130,14 @@ export async function POST(request: Request) {
       [title, owner, description, website, contact_number, contact_email, service_category, neighborhood_id, serviceData.imageUrl, verified || false, delete_after, internal_id, internal_creator_contact]
     );
     client.release();
-    // TODO: Add nodemailer to send email here at this step
+
     if (internal_creator_contact) {
-      // TODO: Update this to use helper functions - see service route
-      if (internal_creator_contact) {
-        const subject = "Service Submitted to The Local Board";
-        const sendToEmail = isDevelopmentMode() ? "receiver@example.com" : internal_creator_contact
-        const emailHtml = getEmailHtmlForItemCreation("service", internal_creator_contact, title, internal_id);
+      const subject = "Service Submitted - The Local Board";
+      const sendToEmail = isDevelopmentMode() ? "receiver@example.com" : internal_creator_contact
+      const emailHtml = getEmailHtmlForItemCreation("service", internal_creator_contact, title, internal_id);
 
-        await sendMail(subject, "emailHtml", emailHtml, sendToEmail);
-      }
-
+      await sendMail(subject, "emailHtml", emailHtml, sendToEmail);
     }
-
 
     return NextResponse.json(result.rows[0]);
   } catch (error) {

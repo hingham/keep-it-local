@@ -27,7 +27,7 @@ export default function NeighborhoodServicesPage() {
     const fetchData = async () => {
       try {
         // Now fetch services for this specific neighborhood
-        const servicesRes = await fetch(`/api/neighborhoods/${neighborhoodId}/services`);
+        const servicesRes = await fetch(`/api/public/services?neighborhood_id=${neighborhoodId}`);
         if (!servicesRes.ok) {
           throw new Error('Failed to fetch services');
         }
@@ -36,6 +36,7 @@ export default function NeighborhoodServicesPage() {
 
         // If there are no events this ensures neighborhood data is still fetched
         const neighborhoodRes = await fetch(`/api/neighborhoods/${neighborhoodId}`);
+        
         if (!neighborhoodRes.ok) {
           throw new Error('Failed to fetch neighborhood');
         }

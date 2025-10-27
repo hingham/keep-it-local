@@ -101,7 +101,7 @@ export interface Neighborhood {
   city: string;
   city_id: number;
   state: string;
-  macro_neighborhood?: string;
+  macro_neighborhood: string;
   created_at: string;
   updated_at: string;
 }
