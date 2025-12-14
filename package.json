@@ -20,7 +20,7 @@
     "@vercel/blob": "^1.1.1",
     "@vercel/postgres": "^0.10.0",
     "dotenv": "^17.2.2",
-    "next": "15.4.7",
+    "next": "15.4.10",
     "nodemailer": "^7.0.6",
     "openai": "^6.3.0",
     "pg": "^8.16.3",
